@@ -1,7 +1,8 @@
-const { Movimiento, Tipo, Categoria } = require('../models');
+const { Movimiento, Tipo, CategoriaMov } = require('../models');
 
 exports.crearMovimiento = async (req, res) => {
   try {
+    console.log("MI BODY ES ",req.body)
     const nuevo = await Movimiento.create(req.body);
     res.status(201).json(nuevo);
   } catch (error) {
@@ -14,7 +15,7 @@ exports.obtenerTodos = async (req, res) => {
     const movimientos = await Movimiento.findAll({
       include: [
         { model: Tipo, as: 'tipo' },
-        { model: Categoria, as: 'categoriamovimiento' }
+        { model: CategoriaMov, as: 'categoriamovimiento' }
       ]
     });
     res.json(movimientos);
@@ -25,10 +26,11 @@ exports.obtenerTodos = async (req, res) => {
 
 exports.obtenerPorId = async (req, res) => {
   try {
+    console.log("El id de mi movimiento es :",req.params.id )
     const mov = await Movimiento.findByPk(req.params.id, {
       include: [
         { model: Tipo, as: 'tipo' },
-        { model: Categoria, as: 'categoriamovimiento' }
+        { model: CategoriaMov, as: 'categoriamovimiento' }
       ]
     });
 

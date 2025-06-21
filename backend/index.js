@@ -10,9 +10,12 @@ const entrenadorRoutes = require('./routes/Entrenador.routes');
 const habilidadesRoutes = require('./routes/Habilidad.route');
 const movimientosRoutes  =require('./routes/Movimiento.routes');
 const objetoRoutes = require('./routes/Objetos.routes');
+const categoriamovRoutes =require('./routes/CategoriaMov.routes');
+const tipoRoutes = require('./routes/Tipo.routes');
 //401 No hay token
 //403 Se requiere admin 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get('/', (req, res) => {
@@ -43,11 +46,14 @@ app.use('/Imagenes', express.static(path.join(__dirname, 'Imagenes')));
 app.use('/api/habilidades', habilidadesRoutes);
 app.use('/api/movimientos', movimientosRoutes);
 app.use('/api/objetos',objetoRoutes);
+app.use('/api/categoriamov',categoriamovRoutes);
+app.use('/api/tipos', tipoRoutes);
 
 
 
 
 const  Entrenador  = require('./models/Entrenador.model');
+const { CategoriaMov } = require('./models');
 async function asignarAdmin(id) {
   const usuario = await Entrenador.findOne({ where: { id } });
 

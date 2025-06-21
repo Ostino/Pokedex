@@ -1,6 +1,7 @@
 const { Objeto } = require('../models');
 const path = require('path');
 const fs = require('fs');
+
 exports.crearObjeto = async (req, res) => {
   try {
     const data = req.body;

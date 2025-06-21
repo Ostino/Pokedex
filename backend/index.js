@@ -7,7 +7,9 @@ const sequelize = require('./config/database');
 const syncModels = require('./utils/syncModel');
 const authRoutes = require('./routes/Auth.routes');
 const entrenadorRoutes = require('./routes/Entrenador.routes');
-
+const habilidadesRoutes = require('./routes/Habilidad.route');
+const movimientosRoutes  =require('./routes/Movimiento.routes');
+const objetoRoutes = require('./routes/Objetos.routes');
 //401 No hay token
 //403 Se requiere admin 
 app.use(express.json());
@@ -38,6 +40,11 @@ iniciarServidor();
 app.use('/api/auth', authRoutes);
 app.use('/api/entrenadores', entrenadorRoutes);
 app.use('/Imagenes', express.static(path.join(__dirname, 'Imagenes')));
+app.use('/api/habilidades', habilidadesRoutes);
+app.use('/api/movimientos', movimientosRoutes);
+app.use('/api/objetos',objetoRoutes);
+
+
 
 
 const  Entrenador  = require('./models/Entrenador.model');

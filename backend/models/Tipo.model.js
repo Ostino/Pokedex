@@ -18,7 +18,5 @@ const Tipo = sequelize.define('Tipo', {
   },
 });
 
-Tipo.associate = (models) => {
-};
 
 module.exports = Tipo;

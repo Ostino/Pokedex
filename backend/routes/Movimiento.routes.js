@@ -5,8 +5,8 @@ const requireUser = require('../middlewares/requiredUser');
 const requireAdmin = require('../middlewares/requiredAdmin');
 
 router.post('/', requireUser, requireAdmin, MovimientoController.crearMovimiento);
-router.get('/', MovimientoController.obtenerTodos);
-router.get('/:id', MovimientoController.obtenerPorId);
+router.get('/', requireUser,MovimientoController.obtenerTodos);
+router.get('/:id',requireUser, MovimientoController.obtenerPorId);
 router.put('/:id', requireUser, requireAdmin, MovimientoController.actualizar);
 router.delete('/:id', requireUser, requireAdmin, MovimientoController.eliminar);
 

@@ -4,10 +4,13 @@ import { AuthContext } from '../context/AuthContext';
 
 export default function AdminEntrenadores() {
   const [entrenadores, setEntrenadores] = useState([]);
+  const [mostrar, setMostrar] = useState(false);
   const [error, setError] = useState('');
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
+    if (!mostrar) return;
+
     const fetchEntrenadores = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/entrenadores/allEntrenadores', {
@@ -20,21 +23,34 @@ export default function AdminEntrenadores() {
     };
 
     fetchEntrenadores();
-  }, [token]);
+  }, [token, mostrar]);
 
-  const cambiarRol = async (id, accion) => {
-    const url = `http://localhost:3000/api/entrenadores/${id}/${accion}`;
+  const hacerAdmin = async (id) => {
     try {
-      await axios.patch(url, {}, {
+      await axios.patch(`http://localhost:3000/api/entrenadores/${id}/hacer-admin`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // recarga lista tras cambio
-      setEntrenadores((prev) =>
-        prev.map((e) => (e.id === id ? { ...e, rol: accion === 'hacer-admin' ? 2 : 1 } : e))
-      );
+      actualizarRolLocal(id, 2);
     } catch {
-      alert('Error al cambiar el rol');
+      alert('Error al promover a admin');
     }
+  };
+
+  const quitarAdmin = async (id) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/entrenadores/${id}/quitar-admin`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      actualizarRolLocal(id, 1);
+    } catch {
+      alert('Error al degradar a usuario');
+    }
+  };
+
+  const actualizarRolLocal = (id, nuevoRol) => {
+    setEntrenadores((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, rol: nuevoRol } : e))
+    );
   };
 
   const cambiarPassword = async (id) => {
@@ -43,7 +59,7 @@ export default function AdminEntrenadores() {
     try {
       await axios.patch(
         `http://localhost:3000/api/entrenadores/${id}/cambiar-password`,
-        { nuevaPassword: nuevaPassword },
+        { password: nuevaPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Contraseña actualizada');
@@ -52,38 +68,58 @@ export default function AdminEntrenadores() {
     }
   };
 
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
-
   return (
     <div>
-      <h2>Gestión de Entrenadores</h2>
-      <table border="1" cellPadding="8">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entrenadores.map((ent) => (
-            <tr key={ent.id}>
-              <td>{ent.id}</td>
-              <td>{ent.username}</td>
-              <td>{ent.rol === 2 ? 'Admin' : 'Usuario'}</td>
-              <td>
-                {ent.rol === 1 ? (
-                  <button onClick={() => cambiarRol(ent.id, 'hacer-admin')}>Promover a admin</button>
-                ) : (
-                  <button onClick={() => cambiarRol(ent.id, 'quitar-admin')}>Degradar a usuario</button>
-                )}
-                <button onClick={() => cambiarPassword(ent.id)}>Cambiar contraseña</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 onClick={() => setMostrar(!mostrar)} style={{ cursor: 'pointer', userSelect: 'none' }}>
+        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} gestión de entrenadores
+      </h2>
+
+      {mostrar && (
+        <>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <table border="1" cellPadding="8" style={{ marginTop: '10px' }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entrenadores.map((ent) => (
+                <tr key={ent.id}>
+                  <td>{ent.id}</td>
+                  <td>{ent.username}</td>
+                  <td>{ent.rol === 2 ? 'Admin' : 'Usuario'}</td>
+                  <td>
+                    <button
+                      onClick={() => hacerAdmin(ent.id)}
+                      disabled={ent.rol === 2}
+                    >
+                      Promover a admin
+                    </button>
+                    <button
+                      onClick={() => quitarAdmin(ent.id)}
+                      disabled={ent.rol === 1 || ent.username === 'admin'}
+                      title={
+                        ent.username === 'admin'
+                          ? 'No se puede degradar al usuario principal "admin"'
+                          : ''
+                      }
+                    >
+                      Degradar a usuario
+                    </button>
+                    <button onClick={() => cambiarPassword(ent.id)}>
+                      Cambiar contraseña
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 }

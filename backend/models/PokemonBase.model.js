@@ -10,7 +10,7 @@ const PokemonBase = sequelize.define('PokemonBase', {
   numeroPokedex: {
   type: DataTypes.INTEGER,
   allowNull: false,
-  unique: true // porque cada especie debe tener un solo número en la Pokédex
+  unique: true
 },
   nombre: {
     type: DataTypes.STRING,

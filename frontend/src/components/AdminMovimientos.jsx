@@ -120,9 +120,9 @@ export default function MovimientosCrud() {
                   </option>
                 ))}
               </select>
-              {modalData.tipoId && (
-                <img src={getTipoImagen(tipos.find(t => t.id == modalData.tipoId)?.imagen)} alt="tipo" width={50} />
-              )}
+              {!modalData.id && modalData.tipoId && (
+  <img src={getTipoImagen(tipos.find(t => t.id == modalData.tipoId)?.imagen)} alt="tipo" width={50} />
+)}
               <select name="categoriaMovimientoId" defaultValue={modalData.categoriaMovimientoId?.toString() || ''} required>
                 <option value="">Categoría</option>
                 {categorias.map((c) => (
@@ -131,9 +131,10 @@ export default function MovimientosCrud() {
                   </option>
                 ))}
               </select>
-              {modalData.categoriaMovimientoId && (
-                <img src={getCategoriaImagen(categorias.find(c => c.id == modalData.categoriaMovimientoId)?.imagen)} alt="cat" width={50} />
-              )}
+              {!modalData.id && modalData.categoriaMovimientoId && (
+  <img src={getCategoriaImagen(categorias.find(c => c.id == modalData.categoriaMovimientoId)?.imagen)} alt="cat" width={50} />
+)}
+
               <input name="potencia" type="number" placeholder="Potencia" defaultValue={modalData.potencia} />
               <input name="pp" type="number" placeholder="PP" defaultValue={modalData.pp} />
               <input name="precision" type="number" placeholder="Precisión" defaultValue={modalData.precision} />

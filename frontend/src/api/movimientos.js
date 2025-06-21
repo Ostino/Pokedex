@@ -28,7 +28,7 @@ export async function crearMovimiento(datos, token) {
 }
 
 export async function actualizarMovimiento(id, datos, token) {
-  const res = await axios.put(`${baseURL}/${id}`, datos, {
+  const res = await axios.put(`${BASE_URL}/movimientos/${id}`, datos, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',

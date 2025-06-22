@@ -12,6 +12,7 @@ export default function ObjetosCrud() {
   const [objetos, setObjetos] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [imagen, setImagen] = useState(null);
+  const [mostrar, setMostrar] = useState(false); // Estado para el pliegue/despliegue
 
   useEffect(() => {
     const cargar = async () => {
@@ -73,25 +74,35 @@ export default function ObjetosCrud() {
 
   return (
     <div>
-      <h2>CRUD de Objetos</h2>
-      <button onClick={() => abrirModal()}>Crear nuevo objeto</button>
+      <h2
+        onClick={() => setMostrar(!mostrar)}
+        style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Objetos
+      </h2>
 
-      <ul>
-        {objetos.map((obj) => (
-          <li key={obj.id}>
-            <strong>{obj.nombre}</strong> - {obj.descripcion}
-            <img
-              src={generarRutaImagen(obj.nombre)}
-              alt={obj.nombre}
-              width={50}
-              style={{ marginLeft: '10px' }}
-              onError={(e) => (e.target.style.display = 'none')}
-            />
-            <button onClick={() => abrirModal(obj)}>Editar</button>
-            <button onClick={() => handleEliminar(obj.id)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      {mostrar && (
+        <>
+          <button onClick={() => abrirModal()}>Crear nuevo objeto</button>
+
+          <ul>
+            {objetos.map((obj) => (
+              <li key={obj.id}>
+                <strong>{obj.nombre}</strong> - {obj.descripcion}
+                <img
+                  src={generarRutaImagen(obj.nombre)}
+                  alt={obj.nombre}
+                  width={50}
+                  style={{ marginLeft: '10px' }}
+                  onError={(e) => (e.target.style.display = 'none')}
+                />
+                <button onClick={() => abrirModal(obj)}>Editar</button>
+                <button onClick={() => handleEliminar(obj.id)}>Eliminar</button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       {modalData && (
         <div className="modal-overlay">

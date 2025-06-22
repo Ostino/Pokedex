@@ -15,6 +15,7 @@ export default function MovimientosCrud() {
   const [tipos, setTipos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [modalData, setModalData] = useState(null);
+  const [mostrar, setMostrar] = useState(false); // Lógica para plegue/despliegue
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +64,7 @@ export default function MovimientosCrud() {
       precision: form.precision.value,
       categoriaMovimientoId: form.categoriaMovimientoId.value,
     };
-    console.log("Se esta por subir este movimiento",datos)
+    console.log("Se esta por subir este movimiento", datos);
     try {
       if (modalData.id) {
         await actualizarMovimiento(modalData.id, datos, token);
@@ -72,7 +73,6 @@ export default function MovimientosCrud() {
       }
       const nuevos = await getMovimientos(token);
       setMovimientos(nuevos);
-      
       cerrarModal();
     } catch (err) {
       alert('Error al guardar movimiento');
@@ -89,30 +89,53 @@ export default function MovimientosCrud() {
     }
   };
 
-  const getTipoImagen = (imagen) => `http://localhost:3000/Imagenes/Tipos/${imagen}`;
-  const getCategoriaImagen = (imagen) => `http://localhost:3000/Imagenes/Categorias/${imagen}`;
+  const getTipoImagen = (imagen) =>
+    `http://localhost:3000/Imagenes/Tipos/${imagen}`;
+  const getCategoriaImagen = (imagen) =>
+    `http://localhost:3000/Imagenes/Categorias/${imagen}`;
 
   return (
     <div>
-      <h2>CRUD de Movimientos</h2>
-      <button onClick={() => abrirModal()}>Nuevo Movimiento</button>
-      <ul>
-        {movimientos.map((mov) => (
-          <li key={mov.id}>
-            <strong>{mov.nombre}</strong> | Tipo: {mov.tipo?.nombre} | Cat: {mov.categoriamovimiento?.nombre} | Pot: {mov.potencia} | PP: {mov.pp} | Prec: {mov.precision}
-            <button onClick={() => abrirModal(mov)}>Editar</button>
-            <button onClick={() => handleEliminar(mov.id)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      <h2
+        onClick={() => setMostrar(!mostrar)}
+        style={{ cursor: 'pointer', userSelect: 'none' }}
+      >
+        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Movimientos
+      </h2>
+
+      {mostrar && (
+        <>
+          <button onClick={() => abrirModal()}>Nuevo Movimiento</button>
+          <ul>
+            {movimientos.map((mov) => (
+              <li key={mov.id}>
+                <strong>{mov.nombre}</strong> | Tipo: {mov.tipo?.nombre} | Cat:{' '}
+                {mov.categoriamovimiento?.nombre} | Pot: {mov.potencia} | PP:{' '}
+                {mov.pp} | Prec: {mov.precision}
+                <button onClick={() => abrirModal(mov)}>Editar</button>
+                <button onClick={() => handleEliminar(mov.id)}>Eliminar</button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       {modalData && (
         <div className="modal-overlay">
           <div className="modal">
             <h3>{modalData.id ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h3>
             <form onSubmit={handleSubmit}>
-              <input name="nombre" placeholder="Nombre" defaultValue={modalData.nombre} required />
-              <select name="tipoId" defaultValue={modalData.tipoId?.toString() || ''} required>
+              <input
+                name="nombre"
+                placeholder="Nombre"
+                defaultValue={modalData.nombre}
+                required
+              />
+              <select
+                name="tipoId"
+                defaultValue={modalData.tipoId?.toString() || ''}
+                required
+              >
                 <option value="">Tipo</option>
                 {tipos.map((t) => (
                   <option key={t.id} value={t.id.toString()}>
@@ -121,9 +144,19 @@ export default function MovimientosCrud() {
                 ))}
               </select>
               {!modalData.id && modalData.tipoId && (
-  <img src={getTipoImagen(tipos.find(t => t.id == modalData.tipoId)?.imagen)} alt="tipo" width={50} />
-)}
-              <select name="categoriaMovimientoId" defaultValue={modalData.categoriaMovimientoId?.toString() || ''} required>
+                <img
+                  src={getTipoImagen(
+                    tipos.find((t) => t.id == modalData.tipoId)?.imagen
+                  )}
+                  alt="tipo"
+                  width={50}
+                />
+              )}
+              <select
+                name="categoriaMovimientoId"
+                defaultValue={modalData.categoriaMovimientoId?.toString() || ''}
+                required
+              >
                 <option value="">Categoría</option>
                 {categorias.map((c) => (
                   <option key={c.id} value={c.id.toString()}>
@@ -132,15 +165,38 @@ export default function MovimientosCrud() {
                 ))}
               </select>
               {!modalData.id && modalData.categoriaMovimientoId && (
-  <img src={getCategoriaImagen(categorias.find(c => c.id == modalData.categoriaMovimientoId)?.imagen)} alt="cat" width={50} />
-)}
-
-              <input name="potencia" type="number" placeholder="Potencia" defaultValue={modalData.potencia} />
-              <input name="pp" type="number" placeholder="PP" defaultValue={modalData.pp} />
-              <input name="precision" type="number" placeholder="Precisión" defaultValue={modalData.precision} />
+                <img
+                  src={getCategoriaImagen(
+                    categorias.find((c) => c.id == modalData.categoriaMovimientoId)
+                      ?.imagen
+                  )}
+                  alt="cat"
+                  width={50}
+                />
+              )}
+              <input
+                name="potencia"
+                type="number"
+                placeholder="Potencia"
+                defaultValue={modalData.potencia}
+              />
+              <input
+                name="pp"
+                type="number"
+                placeholder="PP"
+                defaultValue={modalData.pp}
+              />
+              <input
+                name="precision"
+                type="number"
+                placeholder="Precisión"
+                defaultValue={modalData.precision}
+              />
               <div>
                 <button type="submit">Guardar</button>
-                <button type="button" onClick={cerrarModal}>Cancelar</button>
+                <button type="button" onClick={cerrarModal}>
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>

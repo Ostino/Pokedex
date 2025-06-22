@@ -86,14 +86,26 @@ exports.actualizar = async (req, res) => {
 
 exports.eliminar = async (req, res) => {
   try {
-    const eliminado = await Objeto.destroy({ where: { id: req.params.id } });
+    // Buscar el Pokémon primero para obtener el nombre del archivo de imagen
+    const objeto = await Objeto.findByPk(req.params.id);
 
-    if (!eliminado) {
+    if (!objeto) {
       return res.status(404).json({ error: 'Objeto no encontrado para eliminar' });
     }
 
-    res.json({ mensaje: 'Objeto eliminado correctamente' });
+    // Ruta completa al archivo de imagen
+    const rutaImagen = path.join(__dirname, '..', 'Imagenes', 'Objetos', objeto.imagen);
+
+    // Eliminar la imagen si existe
+    if (fs.existsSync(rutaImagen)) {
+      fs.unlinkSync(rutaImagen);
+    }
+
+    // Eliminar el Pokémon de la base de datos
+    await objeto.destroy();
+
+    res.json({ mensaje: 'objeto eliminado correctamente, incluyendo su imagen.' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar objeto', detalles: error.message });
+    res.status(500).json({ error: 'Error al eliminar el objeto', detalles: error.message });
   }
 };

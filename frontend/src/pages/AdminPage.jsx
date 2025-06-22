@@ -1,6 +1,7 @@
 import AdminEntrenadores from '../components/AdminEntrenadores';
 import AdminObjetos from '../components/AdminObjetos';
 import AdminMovimientos from '../components/AdminMovimientos'
+import AdminPokemonBase from '../components/AdminPokemonBase'
 export default function AdminPage() {
   return (
     <div>
@@ -8,6 +9,7 @@ export default function AdminPage() {
       <AdminEntrenadores />
       <AdminObjetos />
       <AdminMovimientos />
+      <AdminPokemonBase />
     </div>
   );
 }

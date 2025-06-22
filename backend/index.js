@@ -12,6 +12,9 @@ const movimientosRoutes  =require('./routes/Movimiento.routes');
 const objetoRoutes = require('./routes/Objetos.routes');
 const categoriamovRoutes =require('./routes/CategoriaMov.routes');
 const tipoRoutes = require('./routes/Tipo.routes');
+const pokemonBaseRoutes = require('./routes/PokemonBase.route');
+const naturalezaRoutes = require('./routes/Naturaleza.routes');
+
 //401 No hay token
 //403 Se requiere admin 
 app.use(express.json());
@@ -48,7 +51,8 @@ app.use('/api/movimientos', movimientosRoutes);
 app.use('/api/objetos',objetoRoutes);
 app.use('/api/categoriamov',categoriamovRoutes);
 app.use('/api/tipos', tipoRoutes);
-
+app.use('/api/pokemonbase', pokemonBaseRoutes);
+app.use('/api/naturalezas', naturalezaRoutes);
 
 
 

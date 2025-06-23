@@ -37,3 +37,11 @@ export const logoutAll = async (token) => {
   });
   return response.data;
 };
+export const getEquiposByEntrenadorId = async (id, token) => {
+  const response = await axios.get(`${API_URL}/equipos/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

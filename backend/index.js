@@ -4,7 +4,6 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const app = express();
 const sequelize = require('./config/database');
-const syncModels = require('./utils/syncModel');
 const authRoutes = require('./routes/Auth.routes');
 const entrenadorRoutes = require('./routes/Entrenador.routes');
 const habilidadesRoutes = require('./routes/Habilidad.route');
@@ -14,7 +13,7 @@ const categoriamovRoutes =require('./routes/CategoriaMov.routes');
 const tipoRoutes = require('./routes/Tipo.routes');
 const pokemonBaseRoutes = require('./routes/PokemonBase.route');
 const naturalezaRoutes = require('./routes/Naturaleza.routes');
-
+const equipoRoutes = require('./routes/Equipos.routes');
 //401 No hay token
 //403 Se requiere admin 
 app.use(express.json());
@@ -30,7 +29,7 @@ async function iniciarServidor() {
     await sequelize.authenticate();
     console.log('Conexión exitosa a la base de datos');
 
-    //await syncModels({ force: true });
+    //await sequelize.sync({ alter: true });
     console.log('Tablas sincronizadas correctamente');
     await crearAdminSiNoExiste();
     const PORT = 3000;
@@ -53,7 +52,7 @@ app.use('/api/categoriamov',categoriamovRoutes);
 app.use('/api/tipos', tipoRoutes);
 app.use('/api/pokemonbase', pokemonBaseRoutes);
 app.use('/api/naturalezas', naturalezaRoutes);
-
+app.use('/api/equipos',equipoRoutes)
 
 
 const  Entrenador  = require('./models/Entrenador.model');

@@ -7,6 +7,7 @@ import Profile from './pages/Perfil';
 import AuthGuard from './components/AuthGuard';
 import AdminPage from './pages/AdminPage';
 import AdminGuard from './components/AdminGuard';
+import EditEquipo from './pages/EditEquipo';
 export default function App() {
   return (
     <AuthProvider>
@@ -18,6 +19,8 @@ export default function App() {
           {/* Ruta protegida usando AuthGuard */}
           <Route path="/profile" element={ <AuthGuard><Profile /></AuthGuard>}/>
           <Route path="/admin" element={ <AdminGuard><AdminPage /></AdminGuard> }/>
+          <Route path="/editar-equipo/:id" element={<AuthGuard><EditEquipo /></AuthGuard>} />
+
           {/* Redirección raíz */}
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>

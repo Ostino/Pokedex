@@ -29,6 +29,11 @@ Equipo.associate = (models) => {
     as: 'entrenador',
     onDelete: 'CASCADE'
   });
+  Equipo.hasMany(models.PokemonAlt, {
+    foreignKey: 'equipoId',
+    as: 'pokemonAlts'
+  });
+
 };
 
 module.exports = Equipo;

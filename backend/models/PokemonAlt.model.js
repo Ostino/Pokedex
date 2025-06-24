@@ -32,6 +32,7 @@ const PokemonAlt = sequelize.define('PokemonAlt', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  
   numeroPokedex: {
     type: DataTypes.INTEGER,
     allowNull: false

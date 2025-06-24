@@ -36,3 +36,7 @@ export const verificarNumeroPokedex = async (numero, token) => {
   const res = await axios.get(`http://localhost:3000/api/pokemonbase/verificar-numero/${numero}`, headers(token));
   return res.data;
 };
+export const getAllPokemonBase = async (token) => {
+  const res = await axios.get(`http://localhost:3000/api/pokemonbase`, headers(token));
+  return res.data;
+};

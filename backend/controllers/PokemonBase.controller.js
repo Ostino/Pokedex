@@ -174,3 +174,49 @@ exports.verificarNumeroPokedex = async (req, res) => {
     res.status(500).json({ error: 'Error al verificar número Pokédex', detalles: error.message });
   }
 };
+
+exports.asignarStatsBase = async (req, res) => {
+  console.log("llegue a asignar stats y este es mi body", res.body)
+  const pokemonBaseId = req.params.id;
+  const {
+    ps,
+    ataque,
+    defensa,
+    ataqueEspecial,
+    defensaEspecial,
+    velocidad
+  } = req.body;
+
+  try {
+    const pokemon = await PokemonBase.findByPk(pokemonBaseId);
+
+    if (!pokemon) {
+      return res.status(404).json({ error: 'Pokémon Base no encontrado' });
+    }
+
+    const statsExistentes = await StatsBase.findOne({
+      where: { pokemonBaseId }
+    });
+
+    if (statsExistentes) {
+      return res.status(400).json({ error: 'Este Pokémon ya tiene stats asignados' });
+    }
+
+    const nuevosStats = await StatsBase.create({
+      pokemonBaseId,
+      ps,
+      ataque,
+      defensa,
+      ataqueEspecial,
+      defensaEspecial,
+      velocidad
+    });
+
+    res.status(201).json(nuevosStats);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Error al asignar los stats base',
+      detalles: error.message
+    });
+  }
+};

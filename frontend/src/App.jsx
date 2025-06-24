@@ -19,7 +19,7 @@ export default function App() {
           {/* Ruta protegida usando AuthGuard */}
           <Route path="/profile" element={ <AuthGuard><Profile /></AuthGuard>}/>
           <Route path="/admin" element={ <AdminGuard><AdminPage /></AdminGuard> }/>
-          <Route path="/editar-equipo/:id" element={<AuthGuard><EditEquipo /></AuthGuard>} />
+          <Route path="/editar-equipo" element={<AuthGuard><EditEquipo /></AuthGuard>} />
 
           {/* Redirección raíz */}
           <Route path="/" element={<Navigate to="/login" replace />} />

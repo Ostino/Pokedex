@@ -4,7 +4,8 @@ import {
   getAllPokemonBase,
   eliminarPokemonBase,
   actualizarPokemonBase,
-  verificarNumeroPokedex
+  verificarNumeroPokedex,
+  asignarStatsBase
 } from '../api/pokemonBase';
 
 import {
@@ -27,7 +28,7 @@ export default function PokemonBaseCrud() {
   const [objetos, setObjetos] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
-  const [mostrar, setMostrar] = useState(false); // Estado para pliegue/despliegue
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -67,7 +68,13 @@ export default function PokemonBaseCrud() {
         movimiento2Id: '',
         movimiento3Id: '',
         movimiento4Id: '',
-        imagen: null
+        imagen: null,
+        ps: '',
+        ataque: '',
+        defensa: '',
+        ataqueEspecial: '',
+        defensaEspecial: '',
+        velocidad: '',
       }
     );
   };
@@ -78,7 +85,6 @@ export default function PokemonBaseCrud() {
     e.preventDefault();
     const form = e.target;
 
-    // Validaciones (las mismas que ya hicimos antes)
     const numeroPokedex = form.numeroPokedex.value.trim();
     const nombre = form.nombre.value.trim();
     const tipoPrimarioId = form.tipoPrimarioId.value || null;
@@ -92,11 +98,17 @@ export default function PokemonBaseCrud() {
       form.movimiento2Id.value || null,
       form.movimiento3Id.value || null,
       form.movimiento4Id.value || null,
-    ].map((id) => (id === "" ? null : id));
+    ].map((id) => (id === '' ? null : id));
 
     const imagenFile = form.imagen?.files?.[0];
 
-    // Validaciones (igual que antes)
+    const ps = form.ps.value.trim();
+    const ataque = form.ataque.value.trim();
+    const defensa = form.defensa.value.trim();
+    const ataqueEspecial = form.ataqueEspecial.value.trim();
+    const defensaEspecial = form.defensaEspecial.value.trim();
+    const velocidad = form.velocidad.value.trim();
+
     if (!modalData.id) {
       const res = await verificarNumeroPokedex(numeroPokedex, token);
       if (res.existe) {
@@ -113,6 +125,9 @@ export default function PokemonBaseCrud() {
     }
     if (!modalData.id && !imagenFile) {
       return alert("La imagen es obligatoria.");
+    }
+    if (!ps || !ataque || !defensa || !ataqueEspecial || !defensaEspecial || !velocidad) {
+      return alert("Debes ingresar todos los stats base.");
     }
 
     const datos = {
@@ -134,7 +149,15 @@ export default function PokemonBaseCrud() {
       if (modalData.id) {
         await actualizarPokemonBase(modalData.id, datos, token);
       } else {
-        await crearPokemonBase(datos, token);
+        const creado = await crearPokemonBase(datos, token);
+        await asignarStatsBase(creado.id, {
+          ps: Number(ps),
+          ataque: Number(ataque),
+          defensa: Number(defensa),
+          ataqueEspecial: Number(ataqueEspecial),
+          defensaEspecial: Number(defensaEspecial),
+          velocidad: Number(velocidad),
+        }, token);
       }
 
       const actualizados = await getAllPokemonBase(token);
@@ -170,18 +193,15 @@ export default function PokemonBaseCrud() {
           <button onClick={() => abrirModal()}>Nuevo Pokémon</button>
           <ul>
             {pokemons.map((p) => {
-              const nombreImagen = p.nombre.toLowerCase() + '.png'; // o el formato que corresponda
+              const nombreImagen = p.nombre.toLowerCase() + '.png';
               const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
 
               return (
-                <li
-                  key={p.id}
-                  style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <img 
-                    src={urlImagen} 
-                    alt={p.nombre} 
-                    style={{ width: 50, height: 50, objectFit: 'contain' }} 
+                <li key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img
+                    src={urlImagen}
+                    alt={p.nombre}
+                    style={{ width: 50, height: 50, objectFit: 'contain' }}
                     onError={(e) => (e.target.style.display = 'none')}
                   />
                   <div>
@@ -201,79 +221,66 @@ export default function PokemonBaseCrud() {
           <div className="modal">
             <h3>{modalData.id ? 'Editar Pokémon' : 'Nuevo Pokémon'}</h3>
             <form onSubmit={handleSubmit}>
-              <input
-                name="numeroPokedex"
-                defaultValue={modalData.numeroPokedex}
-                placeholder="Número Pokédex"
-                required
-              />
-              <input
-                name="nombre"
-                defaultValue={modalData.nombre}
-                placeholder="Nombre"
-                required
-              />
+              <input name="numeroPokedex" defaultValue={modalData.numeroPokedex} placeholder="Número Pokédex" required />
+              <input name="nombre" defaultValue={modalData.nombre} placeholder="Nombre" required />
+
               <select name="tipoPrimarioId" defaultValue={modalData.tipoPrimarioId} required>
                 <option value="">Tipo Primario</option>
                 {tipos.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.nombre}
-                  </option>
+                  <option key={t.id} value={t.id}>{t.nombre}</option>
                 ))}
               </select>
               <select name="tipoSecundarioId" defaultValue={modalData.tipoSecundarioId}>
                 <option value="">Tipo Secundario</option>
                 {tipos.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.nombre}
-                  </option>
+                  <option key={t.id} value={t.id}>{t.nombre}</option>
                 ))}
               </select>
               <select name="naturalezaId" defaultValue={modalData.naturalezaId} required>
                 <option value="">Naturaleza</option>
                 {naturalezas.map((n) => (
-                  <option key={n.id} value={n.id}>
-                    {n.nombre}
-                  </option>
+                  <option key={n.id} value={n.id}>{n.nombre}</option>
                 ))}
               </select>
               <select name="habilidadId" defaultValue={modalData.habilidadId} required>
                 <option value="">Habilidad</option>
                 {habilidades.map((h) => (
-                  <option key={h.id} value={h.id}>
-                    {h.nombre}
-                  </option>
+                  <option key={h.id} value={h.id}>{h.nombre}</option>
                 ))}
               </select>
               <select name="objetoId" defaultValue={modalData.objetoId}>
                 <option value="">Objeto</option>
                 {objetos.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.nombre}
-                  </option>
+                  <option key={o.id} value={o.id}>{o.nombre}</option>
                 ))}
               </select>
+
               {[1, 2, 3, 4].map((n) => (
                 <select
                   key={n}
                   name={`movimiento${n}Id`}
                   defaultValue={modalData[`movimiento${n}Id`] || ''}
-                  required={n === 1} // Por ejemplo, se puede hacer obligatorio el primer movimiento
+                  required={n === 1}
                 >
                   <option value="">{`Movimiento ${n}`}</option>
                   {movimientos.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.nombre}
-                    </option>
+                    <option key={m.id} value={m.id}>{m.nombre}</option>
                   ))}
                 </select>
               ))}
+
+              <input name="ps" type="number" placeholder="PS" required />
+              <input name="ataque" type="number" placeholder="Ataque" required />
+              <input name="defensa" type="number" placeholder="Defensa" required />
+              <input name="ataqueEspecial" type="number" placeholder="Ataque Especial" required />
+              <input name="defensaEspecial" type="number" placeholder="Defensa Especial" required />
+              <input name="velocidad" type="number" placeholder="Velocidad" required />
+
               <input name="imagen" type="file" accept="image/*" />
+
               <div>
                 <button type="submit">Guardar</button>
-                <button type="button" onClick={cerrarModal}>
-                  Cancelar
-                </button>
+                <button type="button" onClick={cerrarModal}>Cancelar</button>
               </div>
             </form>
           </div>

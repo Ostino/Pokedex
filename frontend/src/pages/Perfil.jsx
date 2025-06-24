@@ -102,7 +102,7 @@ const handleEliminarEquipo = async (id) => {
     <li key={equipo.id}>
       <strong>Nombre:</strong> {equipo.nombre}
       <button
-        onClick={() => navigate(`/editar-equipo/${equipo.id}`)}
+  onClick={() => navigate("/editar-equipo", { state: { equipo } })}
         style={{ marginLeft: '10px' }}
       >
         Editar

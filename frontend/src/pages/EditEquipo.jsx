@@ -26,6 +26,65 @@ export default function EditEquipo() {
   const [objetos, setObjetos] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
 
+  // Estado para la naturaleza seleccionada (objeto)
+  const [naturalezaSeleccionada, setNaturalezaSeleccionada] = useState(null);
+  const [movimientosSeleccionados, setMovimientosSeleccionados] = useState({
+  1: null, // movimiento 1
+  2: null, // movimiento 2
+  3: null,
+  4: null,
+});
+  const [ivs, setIvs] = useState({
+    ps: 0,
+    ataque: 0,
+    defensa: 0,
+    ataqueEspecial: 0,
+    defensaEspecial: 0,
+    velocidad: 0
+  });
+
+  const [evs, setEvs] = useState({
+    ps: 0,
+    ataque: 0,
+    defensa: 0,
+    ataqueEspecial: 0,
+    defensaEspecial: 0,
+    velocidad: 0
+  });
+
+  const [errorFormulario, setErrorFormulario] = useState('');
+
+  // Cuando se selecciona un pokemon, inicializamos IVs, EVs y naturaleza
+  useEffect(() => {
+    if (pokemonSeleccionado) {
+      setNaturalezaSeleccionada(
+        naturalezas.find(n => n.id === pokemonSeleccionado.naturalezaId) || null
+      );
+
+      // Si pokemon tiene IVs y EVs guardados, aquí deberías asignarlos, 
+      // si no, por defecto 0 (acá inicializamos con 0)
+      setIvs({
+        ps: 0,
+        ataque: 0,
+        defensa: 0,
+        ataqueEspecial: 0,
+        defensaEspecial: 0,
+        velocidad: 0
+      });
+
+      setEvs({
+        ps: 0,
+        ataque: 0,
+        defensa: 0,
+        ataqueEspecial: 0,
+        defensaEspecial: 0,
+        velocidad: 0
+      });
+
+      setErrorFormulario('');
+    }
+  }, [pokemonSeleccionado, naturalezas]);
+
   useEffect(() => {
     if (!equipo) {
       navigate('/perfil');
@@ -68,8 +127,56 @@ export default function EditEquipo() {
       setHabilidades(habilidadesData);
       setObjetos(objetosData);
       setMovimientos(movimientosData);
+      
     } catch (err) {
       console.error('Error al cargar datos auxiliares:', err);
+    }
+  };
+  
+  const calcularStatsFinales = () => {
+    if (!pokemonSeleccionado?.statsBase) return null;
+
+    const statsBase = pokemonSeleccionado.statsBase;
+    const nat = naturalezaSeleccionada;
+
+    const statsFinales = {};
+
+    const naturalezaMod = (stat) => {
+      if (!nat) return 1;
+      if (nat.statAumentada === stat) return 1.1;
+      if (nat.statReducida === stat) return 0.9;
+      return 1;
+    };
+
+    for (const stat in statsBase) {
+      if (stat === 'id' || stat === 'pokemonBaseId' || stat === 'createdAt' || stat === 'updatedAt') continue;
+
+      const base = statsBase[stat];
+      const iv = ivs[stat] ?? 0;
+      const ev = evs[stat] ?? 0;
+
+      const statNombre = formatearNombreStat(stat);
+
+      if (stat === 'ps') {
+        statsFinales[stat] = Math.floor(((2 * base + iv + ev / 4) * 1) + 110);
+      } else {
+        const mod = naturalezaMod(statNombre);
+        statsFinales[stat] = Math.floor((((2 * base + iv + ev / 4) * 1) + 5) * mod);
+      }
+    }
+
+    return statsFinales;
+  };
+
+  const formatearNombreStat = (clave) => {
+    switch (clave) {
+      case 'ps': return 'PS';
+      case 'ataque': return 'Ataque';
+      case 'defensa': return 'Defensa';
+      case 'ataqueEspecial': return 'Ataque Especial';
+      case 'defensaEspecial': return 'Defensa Especial';
+      case 'velocidad': return 'Velocidad';
+      default: return clave;
     }
   };
 
@@ -262,7 +369,14 @@ export default function EditEquipo() {
 
           <div style={{ marginTop: '10px' }}>
             <label><strong>Naturaleza:</strong></label>
-            <select>
+            <select
+              value={naturalezaSeleccionada?.id || ''}
+              onChange={(e) => {
+                const id = parseInt(e.target.value);
+                const nat = naturalezas.find(n => n.id === id) || null;
+                setNaturalezaSeleccionada(nat);
+              }}
+            >
               <option value="">Seleccionar...</option>
               {naturalezas.map(n => (
                 <option key={n.id} value={n.id}>{n.nombre}</option>
@@ -290,17 +404,166 @@ export default function EditEquipo() {
             </select>
           </div>
 
-          {[1, 2, 3, 4].map(num => (
-            <div key={num}>
-              <label><strong>Movimiento {num}:</strong></label>
-              <select>
-                <option value="">Seleccionar...</option>
-                {movimientos.map(m => (
-                  <option key={m.id} value={m.id}>{m.nombre}</option>
-                ))}
-              </select>
-            </div>
-          ))}
+          {[1, 2, 3, 4].map((num) => {
+  const movSeleccionado = movimientosSeleccionados[num];
+
+  return (
+    <div key={num} style={{ marginTop: '10px' }}>
+      <label><strong>Movimiento {num}:</strong></label>
+      <select
+        value={movSeleccionado?.id || ''}
+        onChange={(e) => {
+          const id = parseInt(e.target.value);
+          const mov = movimientos.find(m => m.id === id) || null;
+          setMovimientosSeleccionados(prev => ({ ...prev, [num]: mov }));
+        }}
+      >
+        <option value="">Seleccionar...</option>
+        {movimientos.map(m => (
+          <option key={m.id} value={m.id}>{m.nombre}</option>
+        ))}
+      </select>
+
+      {movSeleccionado && (
+        <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span><strong>Potencia:</strong> {movSeleccionado.potencia ?? 'N/A'}</span>
+
+          {/* Imagen del tipo */}
+          {movSeleccionado.tipo?.imagen && (
+            <img
+              src={`http://localhost:3000/Imagenes/TipoElemento/${movSeleccionado.tipo.imagen}`}
+              alt={movSeleccionado.tipo.nombre}
+              style={{ width: 20, height: 20, imageRendering: 'pixelated', // fuerza render pixel-perfect para sprites pixelados
+    objectFit: 'contain', }}
+            />
+          )}
+
+          {/* Imagen de la categoría de movimiento */}
+          {movSeleccionado.categoriamovimiento?.imagen && (
+            <img
+              src={`http://localhost:3000/Imagenes/TipoAtaque/${movSeleccionado.categoriamovimiento.imagen}`}
+              alt={movSeleccionado.categoriamovimiento.nombre}
+              style={{ width: 30, height: 30, objectFit: 'contain' }}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+})}
+
+          {/* STATS BASE */}
+          <div style={{ marginTop: '20px' }}>
+            <h4>Estadísticas Base</h4>
+            <p><strong>PS:</strong> {pokemonSeleccionado.statsBase?.ps ?? 'N/A'}</p>
+            <p><strong>Ataque:</strong> {pokemonSeleccionado.statsBase?.ataque ?? 'N/A'}</p>
+            <p><strong>Defensa:</strong> {pokemonSeleccionado.statsBase?.defensa ?? 'N/A'}</p>
+            <p><strong>Ataque Especial:</strong> {pokemonSeleccionado.statsBase?.ataqueEspecial ?? 'N/A'}</p>
+            <p><strong>Defensa Especial:</strong> {pokemonSeleccionado.statsBase?.defensaEspecial ?? 'N/A'}</p>
+            <p><strong>Velocidad:</strong> {pokemonSeleccionado.statsBase?.velocidad ?? 'N/A'}</p>
+          </div>
+
+          {/* FORMULARIO IVs */}
+          <div style={{ marginTop: '30px' }}>
+            <h4>IVs</h4>
+            {Object.keys(ivs).map((stat) => (
+              <div key={`iv-${stat}`} style={{ marginBottom: '8px' }}>
+                <label style={{ textTransform: 'capitalize' }}>{stat}:</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="31"
+                  value={ivs[stat]}
+                  style={{ marginLeft: '10px', width: '60px' }}
+                  onChange={(e) => {
+                    const val = Math.min(31, Math.max(0, parseInt(e.target.value) || 0));
+                    setIvs(prev => ({ ...prev, [stat]: val }));
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* FORMULARIO EVs */}
+          <div style={{ marginTop: '30px' }}>
+            <h4>EVs</h4>
+            {Object.keys(evs).map((stat) => (
+              <div key={`ev-${stat}`} style={{ marginBottom: '8px' }}>
+                <label style={{ textTransform: 'capitalize' }}>{stat}:</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="252"
+                  value={evs[stat]}
+                  style={{ marginLeft: '10px', width: '60px' }}
+                  onChange={(e) => {
+                    const val = Math.min(252, Math.max(0, parseInt(e.target.value) || 0));
+                    setEvs(prev => ({ ...prev, [stat]: val }));
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* ERRORES */}
+          {errorFormulario && (
+            <p style={{ color: 'red', marginTop: '10px' }}>{errorFormulario}</p>
+          )}
+
+          {/* STATS CALCULADAS */}
+          {(() => {
+            const calculadas = calcularStatsFinales();
+            if (!calculadas) return null;
+
+            return (
+              <div style={{ marginTop: '30px' }}>
+                <h4>Estadísticas Totales (Nivel 100)</h4>
+                <p><strong>PS:</strong> {calculadas.ps}</p>
+                <p><strong>Ataque:</strong> {calculadas.ataque}</p>
+                <p><strong>Defensa:</strong> {calculadas.defensa}</p>
+                <p><strong>Ataque Especial:</strong> {calculadas.ataqueEspecial}</p>
+                <p><strong>Defensa Especial:</strong> {calculadas.defensaEspecial}</p>
+                <p><strong>Velocidad:</strong> {calculadas.velocidad}</p>
+              </div>
+            );
+          })()}
+
+          <button
+            style={{ marginTop: '15px', padding: '8px 16px' }}
+            onClick={() => {
+              // Validar IVs
+              for (const key in ivs) {
+                const val = ivs[key];
+                if (val < 0 || val > 31) {
+                  setErrorFormulario(`IV inválido en ${key}: debe estar entre 0 y 31`);
+                  return;
+                }
+              }
+
+              // Validar EVs
+              let sumaEVs = 0;
+              for (const key in evs) {
+                const val = evs[key];
+                if (val < 0 || val > 252) {
+                  setErrorFormulario(`EV inválido en ${key}: debe estar entre 0 y 252`);
+                  return;
+                }
+                sumaEVs += val;
+              }
+
+              if (sumaEVs > 510) {
+                setErrorFormulario(`La suma total de EVs no puede superar 510 (actual: ${sumaEVs})`);
+                return;
+              }
+
+              // Todo correcto
+              setErrorFormulario('');
+              console.log('Guardar datos:', { ivs, evs, naturaleza: naturalezaSeleccionada });
+              alert('Datos válidos. Puedes continuar o enviarlos al backend.');
+            }}
+          >
+            Guardar Pokémon en el equipo
+          </button>
         </div>
       )}
     </div>

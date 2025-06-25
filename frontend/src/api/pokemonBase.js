@@ -77,14 +77,12 @@ export const verificarNumeroPokedex = async (numero, token) => {
 export const asignarStatsBase = async (pokemonBaseId, stats, token) => {
   console.log("Estas son mis stats:",stats)
     console.log("Estas es mi pokemonBaseId",pokemonBaseId)
-
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   };
-
   const url = `http://localhost:3000/api/pokemonbase/${pokemonBaseId}/asignar-stats`;
 
   const res = await axios.post(url, stats, config);

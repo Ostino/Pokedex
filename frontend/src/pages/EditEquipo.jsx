@@ -2,7 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAllPokemonBase } from '../api/pokemonBase';
 import { AuthContext } from '../context/AuthContext';
-import { getPokemonAltPorEquipo } from '../api/pokemonAlt';
+import { 
+  getPokemonAltPorEquipo, 
+  crearEVs, 
+  crearIVs, 
+  crearPokemonAlt,
+  crearStats
+} from '../api/pokemonAlt';
 import {
   getNaturalezas,
   getHabilidades,
@@ -26,14 +32,17 @@ export default function EditEquipo() {
   const [objetos, setObjetos] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
 
-  // Estado para la naturaleza seleccionada (objeto)
+  // Estados para select controlados
   const [naturalezaSeleccionada, setNaturalezaSeleccionada] = useState(null);
+  const [habilidadSeleccionada, setHabilidadSeleccionada] = useState(null);
+  const [objetoSeleccionado, setObjetoSeleccionado] = useState(null);
   const [movimientosSeleccionados, setMovimientosSeleccionados] = useState({
-  1: null, // movimiento 1
-  2: null, // movimiento 2
-  3: null,
-  4: null,
-});
+    1: null,
+    2: null,
+    3: null,
+    4: null,
+  });
+
   const [ivs, setIvs] = useState({
     ps: 0,
     ataque: 0,
@@ -54,15 +63,22 @@ export default function EditEquipo() {
 
   const [errorFormulario, setErrorFormulario] = useState('');
 
-  // Cuando se selecciona un pokemon, inicializamos IVs, EVs y naturaleza
   useEffect(() => {
     if (pokemonSeleccionado) {
       setNaturalezaSeleccionada(
         naturalezas.find(n => n.id === pokemonSeleccionado.naturalezaId) || null
       );
 
-      // Si pokemon tiene IVs y EVs guardados, aquí deberías asignarlos, 
-      // si no, por defecto 0 (acá inicializamos con 0)
+      setHabilidadSeleccionada(null);
+      setObjetoSeleccionado(null);
+
+      setMovimientosSeleccionados({
+        1: null,
+        2: null,
+        3: null,
+        4: null,
+      });
+
       setIvs({
         ps: 0,
         ataque: 0,
@@ -132,7 +148,7 @@ export default function EditEquipo() {
       console.error('Error al cargar datos auxiliares:', err);
     }
   };
-  
+
   const calcularStatsFinales = () => {
     if (!pokemonSeleccionado?.statsBase) return null;
 
@@ -282,7 +298,7 @@ export default function EditEquipo() {
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {pokemonsDelEquipo.map((p) => {
-            const nombreImagen = p.nombre.toLowerCase() + '.png';
+            const nombreImagen = p.imagen;
             const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
             const tipo1Img = p.tipoPrimario?.imagen
               ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoPrimario.imagen}`
@@ -386,7 +402,14 @@ export default function EditEquipo() {
 
           <div style={{ marginTop: '10px' }}>
             <label><strong>Habilidad:</strong></label>
-            <select>
+            <select
+              value={habilidadSeleccionada?.id || ''}
+              onChange={(e) => {
+                const id = parseInt(e.target.value);
+                const h = habilidades.find(h => h.id === id) || null;
+                setHabilidadSeleccionada(h);
+              }}
+            >
               <option value="">Seleccionar...</option>
               {habilidades.map(h => (
                 <option key={h.id} value={h.id}>{h.nombre}</option>
@@ -396,7 +419,14 @@ export default function EditEquipo() {
 
           <div style={{ marginTop: '10px' }}>
             <label><strong>Objeto:</strong></label>
-            <select>
+            <select
+              value={objetoSeleccionado?.id || ''}
+              onChange={(e) => {
+                const id = parseInt(e.target.value);
+                const o = objetos.find(o => o.id === id) || null;
+                setObjetoSeleccionado(o);
+              }}
+            >
               <option value="">Seleccionar...</option>
               {objetos.map(o => (
                 <option key={o.id} value={o.id}>{o.nombre}</option>
@@ -405,52 +435,51 @@ export default function EditEquipo() {
           </div>
 
           {[1, 2, 3, 4].map((num) => {
-  const movSeleccionado = movimientosSeleccionados[num];
+            const movSeleccionado = movimientosSeleccionados[num];
 
-  return (
-    <div key={num} style={{ marginTop: '10px' }}>
-      <label><strong>Movimiento {num}:</strong></label>
-      <select
-        value={movSeleccionado?.id || ''}
-        onChange={(e) => {
-          const id = parseInt(e.target.value);
-          const mov = movimientos.find(m => m.id === id) || null;
-          setMovimientosSeleccionados(prev => ({ ...prev, [num]: mov }));
-        }}
-      >
-        <option value="">Seleccionar...</option>
-        {movimientos.map(m => (
-          <option key={m.id} value={m.id}>{m.nombre}</option>
-        ))}
-      </select>
+            return (
+              <div key={num} style={{ marginTop: '10px' }}>
+                <label><strong>Movimiento {num}:</strong></label>
+                <select
+                  value={movSeleccionado?.id || ''}
+                  onChange={(e) => {
+                    const id = parseInt(e.target.value);
+                    const mov = movimientos.find(m => m.id === id) || null;
+                    setMovimientosSeleccionados(prev => ({ ...prev, [num]: mov }));
+                  }}
+                >
+                  <option value="">Seleccionar...</option>
+                  {movimientos.map(m => (
+                    <option key={m.id} value={m.id}>{m.nombre}</option>
+                  ))}
+                </select>
 
-      {movSeleccionado && (
-        <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span><strong>Potencia:</strong> {movSeleccionado.potencia ?? 'N/A'}</span>
+                {movSeleccionado && (
+                  <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span><strong>Potencia:</strong> {movSeleccionado.potencia ?? 'N/A'}</span>
 
-          {/* Imagen del tipo */}
-          {movSeleccionado.tipo?.imagen && (
-            <img
-              src={`http://localhost:3000/Imagenes/TipoElemento/${movSeleccionado.tipo.imagen}`}
-              alt={movSeleccionado.tipo.nombre}
-              style={{ width: 20, height: 20, imageRendering: 'pixelated', // fuerza render pixel-perfect para sprites pixelados
-    objectFit: 'contain', }}
-            />
-          )}
+                    {/* Imagen del tipo */}
+                    {movSeleccionado.tipo?.imagen && (
+                      <img
+                        src={`http://localhost:3000/Imagenes/TipoElemento/${movSeleccionado.tipo.imagen}`}
+                        alt={movSeleccionado.tipo.nombre}
+                        style={{ width: 20, height: 20, imageRendering: 'pixelated', objectFit: 'contain' }}
+                      />
+                    )}
 
-          {/* Imagen de la categoría de movimiento */}
-          {movSeleccionado.categoriamovimiento?.imagen && (
-            <img
-              src={`http://localhost:3000/Imagenes/TipoAtaque/${movSeleccionado.categoriamovimiento.imagen}`}
-              alt={movSeleccionado.categoriamovimiento.nombre}
-              style={{ width: 30, height: 30, objectFit: 'contain' }}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-})}
+                    {/* Imagen de la categoría de movimiento */}
+                    {movSeleccionado.categoriamovimiento?.imagen && (
+                      <img
+                        src={`http://localhost:3000/Imagenes/TipoAtaque/${movSeleccionado.categoriamovimiento.imagen}`}
+                        alt={movSeleccionado.categoriamovimiento.nombre}
+                        style={{ width: 30, height: 30, objectFit: 'contain' }}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           {/* STATS BASE */}
           <div style={{ marginTop: '20px' }}>
@@ -467,105 +496,115 @@ export default function EditEquipo() {
           <div style={{ marginTop: '30px' }}>
             <h4>IVs</h4>
             {Object.keys(ivs).map((stat) => (
-              <div key={`iv-${stat}`} style={{ marginBottom: '8px' }}>
-                <label style={{ textTransform: 'capitalize' }}>{stat}:</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="31"
-                  value={ivs[stat]}
-                  style={{ marginLeft: '10px', width: '60px' }}
-                  onChange={(e) => {
-                    const val = Math.min(31, Math.max(0, parseInt(e.target.value) || 0));
-                    setIvs(prev => ({ ...prev, [stat]: val }));
-                  }}
-                />
-              </div>
-            ))}
+              <div key={`iv-${stat}`}
+
+style={{ marginBottom: '5px' }}>
+<label>{formatearNombreStat(stat)}: </label>
+<input
+type="number"
+value={ivs[stat]}
+min={0}
+max={31}
+onChange={(e) =>
+setIvs((prev) => ({ ...prev, [stat]: parseInt(e.target.value) }))
+}
+/>
+</div>
+))}
+</div>
+      {/* FORMULARIO EVs */}
+      <div style={{ marginTop: '30px' }}>
+        <h4>EVs</h4>
+        {Object.keys(evs).map((stat) => (
+          <div key={`ev-${stat}`} style={{ marginBottom: '5px' }}>
+            <label>{formatearNombreStat(stat)}: </label>
+            <input
+              type="number"
+              value={evs[stat]}
+              min={0}
+              max={252}
+              onChange={(e) =>
+                setEvs((prev) => ({ ...prev, [stat]: parseInt(e.target.value) }))
+              }
+            />
           </div>
+        ))}
+      </div>
 
-          {/* FORMULARIO EVs */}
-          <div style={{ marginTop: '30px' }}>
-            <h4>EVs</h4>
-            {Object.keys(evs).map((stat) => (
-              <div key={`ev-${stat}`} style={{ marginBottom: '8px' }}>
-                <label style={{ textTransform: 'capitalize' }}>{stat}:</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="252"
-                  value={evs[stat]}
-                  style={{ marginLeft: '10px', width: '60px' }}
-                  onChange={(e) => {
-                    const val = Math.min(252, Math.max(0, parseInt(e.target.value) || 0));
-                    setEvs(prev => ({ ...prev, [stat]: val }));
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+      {/* CALCULO STATS */}
+      <div style={{ marginTop: '30px' }}>
+        <h4>Estadísticas Finales</h4>
+        {(() => {
+          const finales = calcularStatsFinales();
+          return finales ? (
+            <ul>
+              {Object.entries(finales).map(([stat, valor]) => (
+                <li key={stat}>
+                  <strong>{formatearNombreStat(stat)}:</strong> {valor}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Completa IVs, EVs y Naturaleza para ver los stats.</p>
+          );
+        })()}
+      </div>
 
-          {/* ERRORES */}
-          {errorFormulario && (
-            <p style={{ color: 'red', marginTop: '10px' }}>{errorFormulario}</p>
-          )}
+     <button
+  style={{ marginTop: '30px' }}
+  onClick={async () => {
+    try {
+      // Crear IVs
+      const ivRes = await crearIVs(ivs, token);
 
-          {/* STATS CALCULADAS */}
-          {(() => {
-            const calculadas = calcularStatsFinales();
-            if (!calculadas) return null;
+      // Crear EVs
+      const evRes = await crearEVs(evs, token);
 
-            return (
-              <div style={{ marginTop: '30px' }}>
-                <h4>Estadísticas Totales (Nivel 100)</h4>
-                <p><strong>PS:</strong> {calculadas.ps}</p>
-                <p><strong>Ataque:</strong> {calculadas.ataque}</p>
-                <p><strong>Defensa:</strong> {calculadas.defensa}</p>
-                <p><strong>Ataque Especial:</strong> {calculadas.ataqueEspecial}</p>
-                <p><strong>Defensa Especial:</strong> {calculadas.defensaEspecial}</p>
-                <p><strong>Velocidad:</strong> {calculadas.velocidad}</p>
-              </div>
-            );
-          })()}
+      // Construir objeto para crear PokémonAlt
+      const pokemonAlt = {
+        entrenadorId: equipo.entrenadorId,
+        equipoId: equipo.id,
+        numeroPokedex: pokemonSeleccionado.numeroPokedex,
+        tipoPrimarioId: pokemonSeleccionado.tipoPrimario?.id,
+        tipoSecundarioId: pokemonSeleccionado.tipoSecundario?.id || null,
+        naturalezaId: naturalezaSeleccionada?.id,
+        habilidadId: habilidadSeleccionada?.id || null,
+        objetoId: objetoSeleccionado?.id || null,
+        movimiento1Id: movimientosSeleccionados[1]?.id || null,
+        movimiento2Id: movimientosSeleccionados[2]?.id || null,
+        movimiento3Id: movimientosSeleccionados[3]?.id || null,
+        movimiento4Id: movimientosSeleccionados[4]?.id || null,
+        evsId: evRes.id,
+        ivsId: ivRes.id,
+        imagen: `${pokemonSeleccionado.nombre.toLowerCase()}.png`
+      };
 
-          <button
-            style={{ marginTop: '15px', padding: '8px 16px' }}
-            onClick={() => {
-              // Validar IVs
-              for (const key in ivs) {
-                const val = ivs[key];
-                if (val < 0 || val > 31) {
-                  setErrorFormulario(`IV inválido en ${key}: debe estar entre 0 y 31`);
-                  return;
-                }
-              }
+      // Crear PokémonAlt
+      const pokemonAltCreado = await crearPokemonAlt(pokemonAlt, token);
 
-              // Validar EVs
-              let sumaEVs = 0;
-              for (const key in evs) {
-                const val = evs[key];
-                if (val < 0 || val > 252) {
-                  setErrorFormulario(`EV inválido en ${key}: debe estar entre 0 y 252`);
-                  return;
-                }
-                sumaEVs += val;
-              }
+      // Crear stats finales
+      const statsFinales = calcularStatsFinales();
+      if (statsFinales) {
+        const stats = {
+          ...statsFinales,
+          pokemonAltId: pokemonAltCreado.id
+        };
+        await crearStats(stats, token);
+      }
 
-              if (sumaEVs > 510) {
-                setErrorFormulario(`La suma total de EVs no puede superar 510 (actual: ${sumaEVs})`);
-                return;
-              }
+      alert('Pokémon agregado al equipo con éxito.');
+      window.location.reload();
+    } catch (err) {
+      console.error('Error al guardar Pokémon en el equipo:', err);
+      alert('Error al guardar Pokémon en el equipo.');
+    }
+  }}
+>
+  Guardar Pokémon en el equipo
+</button>
 
-              // Todo correcto
-              setErrorFormulario('');
-              console.log('Guardar datos:', { ivs, evs, naturaleza: naturalezaSeleccionada });
-              alert('Datos válidos. Puedes continuar o enviarlos al backend.');
-            }}
-          >
-            Guardar Pokémon en el equipo
-          </button>
-        </div>
-      )}
     </div>
-  );
+  )}
+</div>
+);
 }

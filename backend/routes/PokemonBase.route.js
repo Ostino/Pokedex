@@ -10,6 +10,8 @@ router.post('/',requireUser,requireAdmin,upload.single('imagen'),PokemonBaseCont
 router.get('/', requireUser, PokemonBaseController.obtenerTodos);
 router.get('/verificar-numero/:numeroPokedex', requireUser,PokemonBaseController.verificarNumeroPokedex);
 router.post('/:id/asignar-stats', requireUser, requireAdmin, PokemonBaseController.asignarStatsBase);
+router.put('/:id/reasignar-stats', requireUser, requireAdmin, PokemonBaseController.actualizarStatsBase);
+router.get('/:id/get-stats', requireUser, PokemonBaseController.obtenerStatsBasePorPokemonBaseId);
 router.get('/:id', requireUser, PokemonBaseController.obtenerPorId);
 router.put('/:id', requireUser, requireAdmin,upload.single('imagen'), PokemonBaseController.actualizar);
 router.delete('/:id', requireUser, requireAdmin, PokemonBaseController.eliminar);

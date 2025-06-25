@@ -103,21 +103,33 @@ exports.actualizar = async (req, res) => {
   }
 };
 
-exports.eliminar = async (req, res) => {
+exports.eliminarPokemonAlt = async (req, res) => {
   try {
-    const pokemon = await PokemonAlt.findByPk(req.params.id);
-    if (!pokemon) return res.status(404).json({ error: 'Pokémon no encontrado' });
+    const id = req.params.id;
+    console.log("Se está por borrar el PokémonAlt con id:", id);
 
-    const fs = require('fs');
-    const path = require('path');
-    if (pokemon.imagen) {
-      const ruta = path.join(__dirname, '..', 'Imagenes', 'Pokemons', pokemon.imagen);
-      if (fs.existsSync(ruta)) fs.unlinkSync(ruta);
+    // 1. Buscar el PokémonAlt
+    const pokemon = await PokemonAlt.findByPk(id);
+    if (!pokemon) {
+      return res.status(404).json({ error: 'PokémonAlt no encontrado' });
     }
 
-    await pokemon.destroy();
-    res.json({ mensaje: 'Pokémon eliminado correctamente' });
+    // 2. Eliminar primero las Stats asociadas (si existen)
+    await Stats.destroy({ where: { pokemonAltId: id } });
+
+    // 3. Eliminar el PokémonAlt
+    await PokemonAlt.destroy({ where: { id } });
+
+    // 4. Eliminar EVs e IVs asociados
+    if (pokemon.evsId) await Evs.destroy({ where: { id: pokemon.evsId } });
+    if (pokemon.ivsId) await Ivs.destroy({ where: { id: pokemon.ivsId } });
+
+    return res.json({ mensaje: 'PokémonAlt y sus datos relacionados eliminados correctamente' });
+
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar Pokémon', detalles: error.message });
+    console.error('❌ Error al eliminar PokémonAlt:', error);
+    return res.status(500).json({ error: 'Error al eliminar PokémonAlt', detalles: error.message });
   }
 };
+
+

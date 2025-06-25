@@ -7,7 +7,8 @@ import {
   crearEVs, 
   crearIVs, 
   crearPokemonAlt,
-  crearStats
+  crearStats,
+  eliminarPokemonAlt
 } from '../api/pokemonAlt';
 import {
   getNaturalezas,
@@ -15,7 +16,7 @@ import {
   getObjetos,
   getMovimientos
 } from '../api/pokemonHelpers';
-
+import VerPokemonAlt from '../components/VerPokemonAlt';
 export default function EditEquipo() {
   const { token } = useContext(AuthContext);
   const location = useLocation();
@@ -31,6 +32,7 @@ export default function EditEquipo() {
   const [habilidades, setHabilidades] = useState([]);
   const [objetos, setObjetos] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
+const [pokemonVerId, setPokemonVerId] = useState(null);
 
   // Estados para select controlados
   const [naturalezaSeleccionada, setNaturalezaSeleccionada] = useState(null);
@@ -183,7 +185,23 @@ export default function EditEquipo() {
 
     return statsFinales;
   };
+  const handleEliminar = async (id) => {
+  if (!window.confirm('¿Estás seguro de eliminar este Pokémon del equipo?')) return;
 
+  try {
+    await eliminarPokemonAlt(id, token);
+    // Actualizar la lista local filtrando el eliminado
+    setPokemonsDelEquipo((prev) => prev.filter((p) => p.id !== id));
+
+    // Si estaba viendo ese Pokémon, cerrar el detalle
+    if (pokemonVerId === id) {
+      setPokemonVerId(null);
+    }
+  } catch (error) {
+    console.error('Error al eliminar el Pokémon:', error);
+    alert('No se pudo eliminar el Pokémon. Intenta nuevamente.');
+  }
+};
   const formatearNombreStat = (clave) => {
     switch (clave) {
       case 'ps': return 'PS';
@@ -286,85 +304,93 @@ export default function EditEquipo() {
                   />
                 )}
               </div>
-              <button onClick={() => abrirPanelEdicion(p)}>➕</button>
+              <button onClick={() => abrirPanelEdicion(p)}disabled={pokemonsDelEquipo.length >= 6}>➕</button>
             </li>
           );
         })}
       </ul>
 
       <h3 style={{ marginTop: '40px' }}>Pokémon en este equipo</h3>
-      {pokemonsDelEquipo.length === 0 ? (
-        <p>Este equipo no tiene Pokémon asignados.</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {pokemonsDelEquipo.map((p) => {
-            const nombreImagen = p.imagen;
-            const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
-            const tipo1Img = p.tipoPrimario?.imagen
-              ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoPrimario.imagen}`
-              : null;
-            const tipo2Img = p.tipoSecundario?.imagen
-              ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoSecundario.imagen}`
-              : null;
+{pokemonsDelEquipo.length === 0 ? (
+  <p>Este equipo no tiene Pokémon asignados.</p>
+) : (
+  <ul style={{ listStyle: 'none', padding: 0 }}>
+    {pokemonsDelEquipo.map((p) => {
+      const nombreImagen = p.imagen;
+      const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
+      const tipo1Img = p.tipoPrimario?.imagen
+        ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoPrimario.imagen}`
+        : null;
+      const tipo2Img = p.tipoSecundario?.imagen
+        ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoSecundario.imagen}`
+        : null;
 
-            return (
-              <li
-                key={p.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  border: '1px solid #ccc',
-                  padding: '10px',
-                  borderRadius: '8px',
-                  marginBottom: '10px'
-                }}
-              >
+      return (
+        <li
+          key={p.id}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            border: '1px solid #ccc',
+            padding: '10px',
+            borderRadius: '8px',
+            marginBottom: '10px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img
+              src={urlImagen}
+              alt={p.nombre}
+              style={{ width: 50, height: 50, objectFit: 'contain' }}
+              onError={(e) => (e.target.style.display = 'none')}
+            />
+            <div>
+              <strong>{p.nombre}</strong> #{p.numeroPokedex} <br />
+              <span>Tipo 1:</span>{' '}
+              {tipo1Img && (
                 <img
-                  src={urlImagen}
-                  alt={p.nombre}
-                  style={{ width: 50, height: 50, objectFit: 'contain' }}
-                  onError={(e) => (e.target.style.display = 'none')}
+                  src={tipo1Img}
+                  alt={p.tipoPrimario?.nombre}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    imageRendering: 'auto',
+                    display: 'inline-block',
+                    verticalAlign: 'middle'
+                  }}
                 />
-                <div style={{ flexGrow: 1 }}>
-                  <strong>{p.nombre}</strong> #{p.numeroPokedex} <br />
-                  <span>Tipo 1:</span>{' '}
-                  {tipo1Img && (
-                    <img
-                      src={tipo1Img}
-                      alt={p.tipoPrimario?.nombre}
-                      style={{
-                        width: 20,
-                        height: 20,
-                        imageRendering: 'auto',
-                        display: 'inline-block',
-                        verticalAlign: 'middle'
-                      }}
-                    />
-                  )}
-                  {' | '}
-                  <span>Tipo 2:</span>{' '}
-                  {tipo2Img ? (
-                    <img
-                      src={tipo2Img}
-                      alt={p.tipoSecundario?.nombre}
-                      style={{
-                        width: 20,
-                        height: 20,
-                        imageRendering: 'auto',
-                        display: 'inline-block',
-                        verticalAlign: 'middle'
-                      }}
-                    />
-                  ) : (
-                    'Ninguno'
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+              )}
+              {' | '}
+              <span>Tipo 2:</span>{' '}
+              {tipo2Img ? (
+                <img
+                  src={tipo2Img}
+                  alt={p.tipoSecundario?.nombre}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    imageRendering: 'auto',
+                    display: 'inline-block',
+                    verticalAlign: 'middle'
+                  }}
+                />
+              ) : (
+                'Ninguno'
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={() => setPokemonVerId(p.id)}>Ver</button>
+<button onClick={() => handleEliminar(p.id)}>Eliminar</button>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+)}
+
 
       {pokemonSeleccionado && (
         <div
@@ -602,9 +628,15 @@ setIvs((prev) => ({ ...prev, [stat]: parseInt(e.target.value) }))
 >
   Guardar Pokémon en el equipo
 </button>
-
     </div>
   )}
+  {pokemonVerId && (
+  <div style={{ marginTop: '20px' }}>
+    <VerPokemonAlt id={pokemonVerId} onClose={() => setPokemonVerId(null)} />
+  </div>
+)}
+
 </div>
+
 );
 }

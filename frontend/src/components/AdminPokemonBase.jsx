@@ -5,7 +5,9 @@ import {
   eliminarPokemonBase,
   actualizarPokemonBase,
   verificarNumeroPokedex,
-  asignarStatsBase
+  asignarStatsBase,
+  getStats,
+  reasignarStatsBase
 } from '../api/pokemonBase';
 
 import {
@@ -54,120 +56,138 @@ export default function PokemonBaseCrud() {
     fetchAll();
   }, [token]);
 
-  const abrirModal = (poke = null) => {
-    setModalData(
-      poke || {
-        numeroPokedex: '',
-        nombre: '',
-        tipoPrimarioId: '',
-        tipoSecundarioId: '',
-        naturalezaId: '',
-        habilidadId: '',
-        objetoId: '',
-        movimiento1Id: '',
-        movimiento2Id: '',
-        movimiento3Id: '',
-        movimiento4Id: '',
-        imagen: null,
-        ps: '',
-        ataque: '',
-        defensa: '',
-        ataqueEspecial: '',
-        defensaEspecial: '',
-        velocidad: '',
-      }
-    );
-  };
+ const abrirModal = async (poke = null) => {
+  if (poke) {
+    const stats = poke.statsBase || {};
+
+    setModalData({
+      ...poke,
+      ps: stats.ps || '',
+      ataque: stats.ataque || '',
+      defensa: stats.defensa || '',
+      ataqueEspecial: stats.ataqueEspecial || '',
+      defensaEspecial: stats.defensaEspecial || '',
+      velocidad: stats.velocidad || ''
+    });
+  } else {
+    setModalData({
+      numeroPokedex: '',
+      nombre: '',
+      tipoPrimarioId: '',
+      tipoSecundarioId: '',
+      naturalezaId: '',
+      habilidadId: '',
+      objetoId: '',
+      movimiento1Id: '',
+      movimiento2Id: '',
+      movimiento3Id: '',
+      movimiento4Id: '',
+      imagen: null,
+      ps: '',
+      ataque: '',
+      defensa: '',
+      ataqueEspecial: '',
+      defensaEspecial: '',
+      velocidad: '',
+    });
+  }
+};
+
 
   const cerrarModal = () => setModalData(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
+  e.preventDefault();
+  const form = e.target;
 
-    const numeroPokedex = form.numeroPokedex.value.trim();
-    const nombre = form.nombre.value.trim();
-    const tipoPrimarioId = form.tipoPrimarioId.value || null;
-    const tipoSecundarioId = form.tipoSecundarioId.value || null;
-    const naturalezaId = form.naturalezaId.value;
-    const habilidadId = form.habilidadId.value;
-    const objetoId = form.objetoId.value || null;
+  const numeroPokedex = form.numeroPokedex.value.trim();
+  const nombre = form.nombre.value.trim();
+  const tipoPrimarioId = form.tipoPrimarioId.value || null;
+  const tipoSecundarioId = form.tipoSecundarioId.value || null;
+  const naturalezaId = form.naturalezaId.value;
+  const habilidadId = form.habilidadId.value;
+  const objetoId = form.objetoId.value || null;
 
-    const movimientosIds = [
-      form.movimiento1Id.value || null,
-      form.movimiento2Id.value || null,
-      form.movimiento3Id.value || null,
-      form.movimiento4Id.value || null,
-    ].map((id) => (id === '' ? null : id));
+  const movimientosIds = [
+    form.movimiento1Id.value || null,
+    form.movimiento2Id.value || null,
+    form.movimiento3Id.value || null,
+    form.movimiento4Id.value || null,
+  ].map((id) => (id === '' ? null : id));
 
-    const imagenFile = form.imagen?.files?.[0];
+  const imagenFile = form.imagen?.files?.[0];
 
-    const ps = form.ps.value.trim();
-    const ataque = form.ataque.value.trim();
-    const defensa = form.defensa.value.trim();
-    const ataqueEspecial = form.ataqueEspecial.value.trim();
-    const defensaEspecial = form.defensaEspecial.value.trim();
-    const velocidad = form.velocidad.value.trim();
+  const ps = form.ps.value.trim();
+  const ataque = form.ataque.value.trim();
+  const defensa = form.defensa.value.trim();
+  const ataqueEspecial = form.ataqueEspecial.value.trim();
+  const defensaEspecial = form.defensaEspecial.value.trim();
+  const velocidad = form.velocidad.value.trim();
 
-    if (!modalData.id) {
-      const res = await verificarNumeroPokedex(numeroPokedex, token);
-      if (res.existe) {
-        alert("Ese número Pokédex ya está registrado. Elige otro.");
-        return;
-      }
+  if (!modalData.id) {
+    const res = await verificarNumeroPokedex(numeroPokedex, token);
+    if (res.existe) {
+      alert("Ese número Pokédex ya está registrado. Elige otro.");
+      return;
     }
-    if (!nombre) return alert("El nombre es obligatorio.");
-    if (!tipoPrimarioId) return alert("Debes seleccionar un tipo primario.");
-    if (!naturalezaId) return alert("La naturaleza es obligatoria.");
-    if (!habilidadId) return alert("La habilidad es obligatoria.");
-    if (!movimientosIds.some((id) => id !== null)) {
-      return alert("Debes asignar al menos un movimiento.");
-    }
-    if (!modalData.id && !imagenFile) {
-      return alert("La imagen es obligatoria.");
-    }
-    if (!ps || !ataque || !defensa || !ataqueEspecial || !defensaEspecial || !velocidad) {
-      return alert("Debes ingresar todos los stats base.");
-    }
+  }
 
-    const datos = {
-      numeroPokedex,
-      nombre,
-      tipoPrimarioId,
-      tipoSecundarioId,
-      naturalezaId,
-      habilidadId,
-      objetoId,
-      movimiento1Id: movimientosIds[0],
-      movimiento2Id: movimientosIds[1],
-      movimiento3Id: movimientosIds[2],
-      movimiento4Id: movimientosIds[3],
-      imagen: imagenFile,
-    };
+  if (!nombre) return alert("El nombre es obligatorio.");
+  if (!tipoPrimarioId) return alert("Debes seleccionar un tipo primario.");
+  if (!naturalezaId) return alert("La naturaleza es obligatoria.");
+  if (!habilidadId) return alert("La habilidad es obligatoria.");
+  if (!movimientosIds.some((id) => id !== null)) {
+    return alert("Debes asignar al menos un movimiento.");
+  }
+  if (!modalData.id && !imagenFile) {
+    return alert("La imagen es obligatoria.");
+  }
+  if (!ps || !ataque || !defensa || !ataqueEspecial || !defensaEspecial || !velocidad) {
+    return alert("Debes ingresar todos los stats base.");
+  }
 
-    try {
-      if (modalData.id) {
-        await actualizarPokemonBase(modalData.id, datos, token);
-      } else {
-        const creado = await crearPokemonBase(datos, token);
-        await asignarStatsBase(creado.id, {
-          ps: Number(ps),
-          ataque: Number(ataque),
-          defensa: Number(defensa),
-          ataqueEspecial: Number(ataqueEspecial),
-          defensaEspecial: Number(defensaEspecial),
-          velocidad: Number(velocidad),
-        }, token);
-      }
-
-      const actualizados = await getAllPokemonBase(token);
-      setPokemons(actualizados);
-      cerrarModal();
-    } catch (err) {
-      console.error(err);
-      alert("Error al guardar Pokémon");
-    }
+  const datos = {
+    numeroPokedex,
+    nombre,
+    tipoPrimarioId,
+    tipoSecundarioId,
+    naturalezaId,
+    habilidadId,
+    objetoId,
+    movimiento1Id: movimientosIds[0],
+    movimiento2Id: movimientosIds[1],
+    movimiento3Id: movimientosIds[2],
+    movimiento4Id: movimientosIds[3],
+    imagen: imagenFile,
   };
+
+  const stats = {
+    ps: Number(ps),
+    ataque: Number(ataque),
+    defensa: Number(defensa),
+    ataqueEspecial: Number(ataqueEspecial),
+    defensaEspecial: Number(defensaEspecial),
+    velocidad: Number(velocidad),
+  };
+
+  try {
+    if (modalData.id) {
+      await reasignarStatsBase(modalData.id, stats, token);
+      await actualizarPokemonBase(modalData.id, datos, token);
+    } else {
+      const creado = await crearPokemonBase(datos, token);
+      await asignarStatsBase(creado.id, stats, token);
+    }
+
+    const actualizados = await getAllPokemonBase(token);
+    setPokemons(actualizados);
+    cerrarModal();
+  } catch (err) {
+    console.error(err);
+    alert("Error al guardar Pokémon");
+  }
+};
+
 
   const handleEliminar = async (id) => {
     if (!confirm('¿Eliminar Pokémon Base?')) return;
@@ -269,12 +289,12 @@ export default function PokemonBaseCrud() {
                 </select>
               ))}
 
-              <input name="ps" type="number" placeholder="PS" required />
-              <input name="ataque" type="number" placeholder="Ataque" required />
-              <input name="defensa" type="number" placeholder="Defensa" required />
-              <input name="ataqueEspecial" type="number" placeholder="Ataque Especial" required />
-              <input name="defensaEspecial" type="number" placeholder="Defensa Especial" required />
-              <input name="velocidad" type="number" placeholder="Velocidad" required />
+              <input name="ps" type="number" placeholder="PS" defaultValue={modalData.ps} required />
+              <input name="ataque" type="number" placeholder="Ataque" defaultValue={modalData.ataque} required />
+              <input name="defensa" type="number" placeholder="Defensa" defaultValue={modalData.defensa} required />
+              <input name="ataqueEspecial" type="number" placeholder="Ataque Especial" defaultValue={modalData.ataqueEspecial} required />
+              <input name="defensaEspecial" type="number" placeholder="Defensa Especial" defaultValue={modalData.defensaEspecial} required />
+              <input name="velocidad" type="number" placeholder="Velocidad" defaultValue={modalData.velocidad} required />
 
               <input name="imagen" type="file" accept="image/*" />
 

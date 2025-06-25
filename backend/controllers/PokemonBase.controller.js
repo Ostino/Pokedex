@@ -220,3 +220,61 @@ exports.asignarStatsBase = async (req, res) => {
     });
   }
 };
+
+exports.actualizarStatsBase = async (req, res) => {
+  const pokemonBaseId = req.params.id;
+  const {
+    ps,
+    ataque,
+    defensa,
+    ataqueEspecial,
+    defensaEspecial,
+    velocidad
+  } = req.body;
+
+  try {
+    const stats = await StatsBase.findOne({
+      where: { pokemonBaseId }
+    });
+
+    if (!stats) {
+      return res.status(404).json({ error: 'Stats base no encontradas para este Pokémon' });
+    }
+
+    await stats.update({
+      ps,
+      ataque,
+      defensa,
+      ataqueEspecial,
+      defensaEspecial,
+      velocidad
+    });
+
+    return res.json({ mensaje: 'Stats base actualizadas correctamente', stats });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Error al actualizar los stats base',
+      detalles: error.message
+    });
+  }
+};
+
+
+exports.obtenerStatsBasePorPokemonBaseId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const stats = await StatsBase.findOne({
+      where: { pokemonBaseId: id }
+    });
+
+    if (!stats) {
+      return res.status(404).json({ error: 'Stats base no encontradas para este Pokémon' });
+    }
+
+    return res.json(stats);
+  } catch (error) {
+    console.error('❌ Error al obtener stats base:', error);
+    return res.status(500).json({ error: 'Error al obtener stats base', detalles: error.message });
+  }
+};

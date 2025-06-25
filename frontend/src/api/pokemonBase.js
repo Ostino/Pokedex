@@ -88,3 +88,22 @@ export const asignarStatsBase = async (pokemonBaseId, stats, token) => {
   const res = await axios.post(url, stats, config);
   return res.data;
 };
+export const getStats = async (pokemonBaseId, token) => {
+  const res = await axios.get(
+    `http://localhost:3000/api/pokemonbase/${pokemonBaseId}/get-stats`,
+    headers(token)
+  );
+  return res.data;
+};
+
+export const reasignarStatsBase = async (id, stats, token) => {
+  const res = await axios.put(
+    `http://localhost:3000/api/pokemonbase/${id}/reasignar-stats`,
+    stats,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return res.data;
+};
+

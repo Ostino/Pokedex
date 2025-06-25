@@ -34,3 +34,16 @@ export const crearStats = async (stats, token) => {
   });
   return res.data;
 };
+
+export const eliminarPokemonAlt = async (id, token) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    await axios.delete(`http://localhost:3000/api/pokemonalt/${id}`, config);
+  } catch (error) {
+    throw error;
+  }
+};

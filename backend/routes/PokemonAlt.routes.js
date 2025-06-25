@@ -8,6 +8,6 @@ router.get('/', requireUser, controller.obtenerTodos);
 router.get('/:id', requireUser, controller.obtenerPorId);
 router.post('/', requireUser, controller.crear);
 router.put('/:id', requireUser, controller.actualizar);
-router.delete('/:id', requireUser, controller.eliminar);
+router.delete('/:id', requireUser, controller.eliminarPokemonAlt);
 
 module.exports = router;

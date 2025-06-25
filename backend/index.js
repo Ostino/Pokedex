@@ -33,7 +33,7 @@ async function iniciarServidor() {
     await sequelize.authenticate();
     console.log('Conexión exitosa a la base de datos');
 
-    //await sequelize.sync({ alter: true });
+    //await sequelize.sync({ force: true });
     console.log('Tablas sincronizadas correctamente');
     await crearAdminSiNoExiste();
     const PORT = 3000;
@@ -95,6 +95,7 @@ async function crearAdminSiNoExiste() {
     const nuevoAdmin = await Entrenador.create({
       username: 'admin',
       password: passwordHash,
+      email: 'admin@email.com',
       rol: 2, // admin
     });
 

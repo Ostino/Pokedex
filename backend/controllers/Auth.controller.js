@@ -9,13 +9,13 @@ const SECRET_KEY = process.env.JWT_SECRET || 'secreto';
 // Registro
 exports.register = async (req, res) => {
   try {
-    const { username, password } = req.body;
-
+    const { username, password,email } = req.body;
+    
     const existe = await Entrenador.findOne({ where: { username } });
     if (existe) return res.status(400).json({ error: 'Username ya registrado' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const entrenador = await Entrenador.create({ username, password: hashedPassword });
+    const entrenador = await Entrenador.create({ username, password: hashedPassword ,email});
 
     res.status(201).json({ mensaje: 'Entrenador registrado', entrenador });
   } catch (error) {

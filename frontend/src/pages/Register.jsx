@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { register as apiRegister } from '../api/auth';
 
 export default function Register() {
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' ,email:''});
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -37,6 +37,13 @@ export default function Register() {
           placeholder="Usuario"
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
+          required
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           required
         />
         <input

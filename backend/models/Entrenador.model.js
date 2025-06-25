@@ -17,6 +17,11 @@ const Entrenador = sequelize.define('Entrenador', {
     unique: true,
     allowNull: false
   },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false

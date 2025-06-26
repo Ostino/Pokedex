@@ -1,11 +1,23 @@
 import axios from 'axios';
 
 export const getPokemonAltPorEquipo = async (equipoId, token) => {
+          console.log("El id del equipo essss ",equipoId)
   const response = await axios.get(`http://localhost:3000/api/pokemonalt/por-entrenador/${equipoId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log("El equipo es ss ",response.data)
+  return response.data;
+};
+export const getPokemonAltPorEquipos = async (equipoId, token) => {
+          console.log("El id del equipo essss ",equipoId)
+  const response = await axios.get(`http://localhost:3000/api/pokemonalt/por-equipo/${equipoId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log("El equipo es ss ",response.data)
   return response.data;
 };
 export const crearEVs = async (evs, token) => {

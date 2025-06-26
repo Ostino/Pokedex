@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register as apiRegister } from '../api/auth';
-
+import '../styles/register.css'
 export default function Register() {
   const [form, setForm] = useState({ username: '', password: '' ,email:''});
   const [error, setError] = useState('');
@@ -29,39 +29,45 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <h2>Registro</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Usuario"
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
-        <button type="submit">Registrarse</button>
-      </form>
+    <div className="register-container">
+  <h2 className="register-title">Registro</h2>
 
-      <p>
-        ¿Ya tienes cuenta?{' '}
-        <a href="/login" style={{ color: 'blue' }}>
-          Inicia sesión
-        </a>
-      </p>
-    </div>
+  {error && <p className="register-error">{error}</p>}
+
+  <form onSubmit={handleSubmit} className="register-form">
+    <input
+      className="register-input"
+      placeholder="Usuario"
+      value={form.username}
+      onChange={(e) => setForm({ ...form, username: e.target.value })}
+      required
+    />
+    <input
+      className="register-input"
+      type="email"
+      placeholder="Email"
+      value={form.email}
+      onChange={(e) => setForm({ ...form, email: e.target.value })}
+      required
+    />
+    <input
+      className="register-input"
+      type="password"
+      placeholder="Contraseña"
+      value={form.password}
+      onChange={(e) => setForm({ ...form, password: e.target.value })}
+      required
+    />
+    <button type="submit" className="register-button">Registrarse</button>
+  </form>
+
+  <p className="register-login-text">
+    ¿Ya tienes cuenta?{' '}
+    <a href="/login" className="register-login-link">
+      Inicia sesión
+    </a>
+  </p>
+</div>
+
   );
 }

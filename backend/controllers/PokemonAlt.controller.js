@@ -80,6 +80,34 @@ exports.obtenerPorEntrenadorId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los Pokémon del entrenador', detalles: error.message });
   }
 };
+exports.obtenerPorEquipoId = async (req, res) => {
+  try {
+    const { equipoId } = req.params;
+    console.log("El equipo es backend ",equipoId)
+    const pokemons = await PokemonAlt.findAll({
+      where: { equipoId },
+      include: [
+        { model: Tipo, as: 'tipoPrimario' },
+        { model: Tipo, as: 'tipoSecundario' },
+        { model: Naturaleza, as: 'naturaleza' },
+        { model: Habilidades, as: 'habilidad' },
+        { model: Movimiento, as: 'movimiento1' },
+        { model: Movimiento, as: 'movimiento2' },
+        { model: Movimiento, as: 'movimiento3' },
+        { model: Movimiento, as: 'movimiento4' },
+        { model: Objeto, as: 'objeto' },
+        { model: Evs, as: 'evs' },
+        { model: Ivs, as: 'ivs' },
+        { model: Stats, as: 'stats' },
+        { model: Equipo, as: 'equipo' }
+      ]
+    });
+
+    res.json(pokemons);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los Pokémon del equipo', detalles: error.message });
+  }
+};
 exports.crear = async (req, res) => {
   try {
     const data = req.body;

@@ -8,6 +8,7 @@ import {
   getCategoriasMovimiento,
 } from '../api/movimientos';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/movimientosCrud.css';
 
 export default function MovimientosCrud() {
   const { token } = useContext(AuthContext);
@@ -95,113 +96,82 @@ export default function MovimientosCrud() {
     `http://localhost:3000/Imagenes/Categorias/${imagen}`;
 
   return (
-    <div>
-      <h2
-        onClick={() => setMostrar(!mostrar)}
-        style={{ cursor: 'pointer', userSelect: 'none' }}
-      >
-        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Movimientos
-      </h2>
+    <div className="movimientos-container">
+  <h2 className="movimientos-titulo" onClick={() => setMostrar(!mostrar)}>
+    {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Movimientos
+  </h2>
 
-      {mostrar && (
-        <>
-          <button onClick={() => abrirModal()}>Nuevo Movimiento</button>
-          <ul>
-            {movimientos.map((mov) => (
-              <li key={mov.id}>
-                <strong>{mov.nombre}</strong> | Tipo: {mov.tipo?.nombre} | Cat:{' '}
-                {mov.categoriamovimiento?.nombre} | Pot: {mov.potencia} | PP:{' '}
-                {mov.pp} | Prec: {mov.precision}
-                <button onClick={() => abrirModal(mov)}>Editar</button>
-                <button onClick={() => handleEliminar(mov.id)}>Eliminar</button>
-              </li>
+  {mostrar && (
+    <>
+      <button className="btn btn-nuevo" onClick={() => abrirModal()}>
+        Nuevo Movimiento
+      </button>
+
+      <ul className="lista-movimientos">
+        {movimientos.map((mov) => (
+          <li key={mov.id} className="item-movimiento">
+            <strong>{mov.nombre}</strong> | Tipo: {mov.tipo?.nombre} | Cat: {mov.categoriamovimiento?.nombre} | Pot: {mov.potencia} | PP: {mov.pp} | Prec: {mov.precision}
+            <div className="acciones">
+              <button className="btn btn-editar" onClick={() => abrirModal(mov)}>Editar</button>
+              <button className="btn btn-eliminar" onClick={() => handleEliminar(mov.id)}>Eliminar</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {modalData && (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h3>{modalData.id ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h3>
+        <form onSubmit={handleSubmit}>
+          <input name="nombre" placeholder="Nombre" defaultValue={modalData.nombre} required />
+          <select name="tipoId" defaultValue={modalData.tipoId?.toString() || ''} required>
+            <option value="">Tipo</option>
+            {tipos.map((t) => (
+              <option key={t.id} value={t.id.toString()}>{t.nombre}</option>
             ))}
-          </ul>
-        </>
-      )}
+          </select>
 
-      {modalData && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>{modalData.id ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h3>
-            <form onSubmit={handleSubmit}>
-              <input
-                name="nombre"
-                placeholder="Nombre"
-                defaultValue={modalData.nombre}
-                required
-              />
-              <select
-                name="tipoId"
-                defaultValue={modalData.tipoId?.toString() || ''}
-                required
-              >
-                <option value="">Tipo</option>
-                {tipos.map((t) => (
-                  <option key={t.id} value={t.id.toString()}>
-                    {t.nombre}
-                  </option>
-                ))}
-              </select>
-              {!modalData.id && modalData.tipoId && (
-                <img
-                  src={getTipoImagen(
-                    tipos.find((t) => t.id == modalData.tipoId)?.imagen
-                  )}
-                  alt="tipo"
-                  width={50}
-                />
-              )}
-              <select
-                name="categoriaMovimientoId"
-                defaultValue={modalData.categoriaMovimientoId?.toString() || ''}
-                required
-              >
-                <option value="">Categoría</option>
-                {categorias.map((c) => (
-                  <option key={c.id} value={c.id.toString()}>
-                    {c.nombre}
-                  </option>
-                ))}
-              </select>
-              {!modalData.id && modalData.categoriaMovimientoId && (
-                <img
-                  src={getCategoriaImagen(
-                    categorias.find((c) => c.id == modalData.categoriaMovimientoId)
-                      ?.imagen
-                  )}
-                  alt="cat"
-                  width={50}
-                />
-              )}
-              <input
-                name="potencia"
-                type="number"
-                placeholder="Potencia"
-                defaultValue={modalData.potencia}
-              />
-              <input
-                name="pp"
-                type="number"
-                placeholder="PP"
-                defaultValue={modalData.pp}
-              />
-              <input
-                name="precision"
-                type="number"
-                placeholder="Precisión"
-                defaultValue={modalData.precision}
-              />
-              <div>
-                <button type="submit">Guardar</button>
-                <button type="button" onClick={cerrarModal}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
+          {!modalData.id && modalData.tipoId && (
+            <img
+              className="imagen-tipo"
+              src={getTipoImagen(tipos.find((t) => t.id == modalData.tipoId)?.imagen)}
+              alt="tipo"
+              width={50}
+            />
+          )}
+
+          <select name="categoriaMovimientoId" defaultValue={modalData.categoriaMovimientoId?.toString() || ''} required>
+            <option value="">Categoría</option>
+            {categorias.map((c) => (
+              <option key={c.id} value={c.id.toString()}>{c.nombre}</option>
+            ))}
+          </select>
+
+          {!modalData.id && modalData.categoriaMovimientoId && (
+            <img
+              className="imagen-categoria"
+              src={getCategoriaImagen(categorias.find((c) => c.id == modalData.categoriaMovimientoId)?.imagen)}
+              alt="cat"
+              width={50}
+            />
+          )}
+
+          <input name="potencia" type="number" placeholder="Potencia" defaultValue={modalData.potencia} />
+          <input name="pp" type="number" placeholder="PP" defaultValue={modalData.pp} />
+          <input name="precision" type="number" placeholder="Precisión" defaultValue={modalData.precision} />
+
+          <div className="modal-acciones">
+            <button type="submit" className="btn btn-guardar">Guardar</button>
+            <button type="button" className="btn btn-cancelar" onClick={cerrarModal}>Cancelar</button>
           </div>
-        </div>
-      )}
+        </form>
+      </div>
     </div>
+  )}
+</div>
+
   );
 }

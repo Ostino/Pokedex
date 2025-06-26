@@ -1,0 +1,139 @@
+.movimientos-container {
+  padding: 20px 30px;
+  background-color: var(--color-gris-oscuro);
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra);
+  color: var(--color-blanco);
+  margin-top: 30px;
+}
+
+.movimientos-titulo {
+  font-size: 1.5rem;
+  color: var(--color-blanco);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 20px;
+}
+.movimientos-titulo:hover {
+  color: var(--color-rojo-oscuro);
+}
+
+.btn {
+  padding: 6px 12px;
+  border-radius: var(--radio-borde);
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-nuevo {
+  background-color: var(--color-blanco);
+  color: var(--color-negro);
+  margin-bottom: 20px;
+}
+
+.btn-nuevo:hover {
+  background-color: var(--color-gris);
+}
+
+.lista-movimientos {
+  list-style: none;
+  padding-left: 0;
+}
+
+.item-movimiento {
+  background-color: var(--color-negro);
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra);
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-editar {
+  background-color: var(--color-gris);
+  color: var(--color-negro);
+}
+
+.btn-editar:hover {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-eliminar {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-eliminar:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: var(--color-blanco);
+  color: var(--color-negro);
+  padding: 25px 30px;
+  border-radius: var(--radio-borde);
+  width: 320px;
+  max-width: 90vw;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal input,
+.modal select {
+  padding: 8px;
+  border: 1px solid var(--color-gris);
+  border-radius: var(--radio-borde);
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.btn-guardar {
+  background-color: var(--color-gris);
+  color: var(--color-negro);
+}
+
+.btn-guardar:hover {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-cancelar {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-cancelar:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+.imagen-tipo,
+.imagen-categoria {
+  margin: auto;
+  display: block;
+}

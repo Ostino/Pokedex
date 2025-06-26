@@ -1,0 +1,19 @@
+.admin-page {
+  padding: 40px;
+  background-color: var(--color-gris);
+  color: var(--color-blanco);
+  min-height: 100vh;
+}
+
+.admin-titulo {
+  font-size: 2rem;
+  color: var(--color-gris-oscuro);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-seccion {
+  background-color: var(--color-gris);
+
+  border-radius: var(--radio-borde);
+}

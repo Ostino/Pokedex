@@ -17,6 +17,7 @@ import {
   getMovimientos,
   getObjetos,
 } from '../api/pokemonHelpers';
+import '../styles/pokemonBaseCrud.css';
 
 import { AuthContext } from '../context/AuthContext';
 
@@ -200,112 +201,105 @@ export default function PokemonBaseCrud() {
   };
 
   return (
-    <div>
-      <h2
-        onClick={() => setMostrar(!mostrar)}
-        style={{ cursor: 'pointer', userSelect: 'none' }}
-      >
-        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD Pokémon Base
-      </h2>
+    <div className="pokemonbase-container">
+  <h2 className="titulo-seccion" onClick={() => setMostrar(!mostrar)}>
+    {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD Pokémon Base
+  </h2>
 
-      {mostrar && (
-        <>
-          <button onClick={() => abrirModal()}>Nuevo Pokémon</button>
-          <ul>
-            {pokemons.map((p) => {
-              const nombreImagen = p.nombre.toLowerCase() + '.png';
-              const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
+  {mostrar && (
+    <>
+      <button className="btn btn-nuevo" onClick={() => abrirModal()}>Nuevo Pokémon</button>
+      <ul className="lista-pokemons">
+        {pokemons.map((p) => {
+          const nombreImagen = p.nombre.toLowerCase() + '.png';
+          const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
 
-              return (
-                <li key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img
-                    src={urlImagen}
-                    alt={p.nombre}
-                    style={{ width: 50, height: 50, objectFit: 'contain' }}
-                    onError={(e) => (e.target.style.display = 'none')}
-                  />
-                  <div>
-                    <strong>{p.nombre}</strong> #{p.numeroPokedex} | Tipo 1: {p.tipoPrimario?.nombre} | Tipo 2: {p.tipoSecundario?.nombre}
-                  </div>
-                  <button onClick={() => abrirModal(p)}>Editar</button>
-                  <button onClick={() => handleEliminar(p.id)}>Eliminar</button>
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
-
-      {modalData && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>{modalData.id ? 'Editar Pokémon' : 'Nuevo Pokémon'}</h3>
-            <form onSubmit={handleSubmit}>
-              <input name="numeroPokedex" defaultValue={modalData.numeroPokedex} placeholder="Número Pokédex" required />
-              <input name="nombre" defaultValue={modalData.nombre} placeholder="Nombre" required />
-
-              <select name="tipoPrimarioId" defaultValue={modalData.tipoPrimarioId} required>
-                <option value="">Tipo Primario</option>
-                {tipos.map((t) => (
-                  <option key={t.id} value={t.id}>{t.nombre}</option>
-                ))}
-              </select>
-              <select name="tipoSecundarioId" defaultValue={modalData.tipoSecundarioId}>
-                <option value="">Tipo Secundario</option>
-                {tipos.map((t) => (
-                  <option key={t.id} value={t.id}>{t.nombre}</option>
-                ))}
-              </select>
-              <select name="naturalezaId" defaultValue={modalData.naturalezaId} required>
-                <option value="">Naturaleza</option>
-                {naturalezas.map((n) => (
-                  <option key={n.id} value={n.id}>{n.nombre}</option>
-                ))}
-              </select>
-              <select name="habilidadId" defaultValue={modalData.habilidadId} required>
-                <option value="">Habilidad</option>
-                {habilidades.map((h) => (
-                  <option key={h.id} value={h.id}>{h.nombre}</option>
-                ))}
-              </select>
-              <select name="objetoId" defaultValue={modalData.objetoId}>
-                <option value="">Objeto</option>
-                {objetos.map((o) => (
-                  <option key={o.id} value={o.id}>{o.nombre}</option>
-                ))}
-              </select>
-
-              {[1, 2, 3, 4].map((n) => (
-                <select
-                  key={n}
-                  name={`movimiento${n}Id`}
-                  defaultValue={modalData[`movimiento${n}Id`] || ''}
-                  required={n === 1}
-                >
-                  <option value="">{`Movimiento ${n}`}</option>
-                  {movimientos.map((m) => (
-                    <option key={m.id} value={m.id}>{m.nombre}</option>
-                  ))}
-                </select>
-              ))}
-
-              <input name="ps" type="number" placeholder="PS" defaultValue={modalData.ps} required />
-              <input name="ataque" type="number" placeholder="Ataque" defaultValue={modalData.ataque} required />
-              <input name="defensa" type="number" placeholder="Defensa" defaultValue={modalData.defensa} required />
-              <input name="ataqueEspecial" type="number" placeholder="Ataque Especial" defaultValue={modalData.ataqueEspecial} required />
-              <input name="defensaEspecial" type="number" placeholder="Defensa Especial" defaultValue={modalData.defensaEspecial} required />
-              <input name="velocidad" type="number" placeholder="Velocidad" defaultValue={modalData.velocidad} required />
-
-              <input name="imagen" type="file" accept="image/*" />
-
-              <div>
-                <button type="submit">Guardar</button>
-                <button type="button" onClick={cerrarModal}>Cancelar</button>
+          return (
+            <li key={p.id} className="pokemon-item">
+              <img
+                src={urlImagen}
+                alt={p.nombre}
+                className="pokemon-img"
+                onError={(e) => (e.target.style.display = 'none')}
+              />
+              <div className="pokemon-info">
+                <strong>{p.nombre}</strong> #{p.numeroPokedex} | Tipo 1: {p.tipoPrimario?.nombre} | Tipo 2: {p.tipoSecundario?.nombre}
               </div>
-            </form>
+              <div className="acciones">
+                <button className="btn btn-editar" onClick={() => abrirModal(p)}>Editar</button>
+                <button className="btn btn-eliminar" onClick={() => handleEliminar(p.id)}>Eliminar</button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  )}
+
+  {modalData && (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h3>{modalData.id ? 'Editar Pokémon' : 'Nuevo Pokémon'}</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
+            <input name="numeroPokedex" placeholder="Número Pokédex" defaultValue={modalData.numeroPokedex} required />
+            <input name="nombre" placeholder="Nombre" defaultValue={modalData.nombre} required />
+
+            <select name="tipoPrimarioId" defaultValue={modalData.tipoPrimarioId} required>
+              <option value="">Tipo Primario</option>
+              {tipos.map((t) => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+            </select>
+            <select name="tipoSecundarioId" defaultValue={modalData.tipoSecundarioId}>
+              <option value="">Tipo Secundario</option>
+              {tipos.map((t) => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+            </select>
+
+            <select name="naturalezaId" defaultValue={modalData.naturalezaId} required>
+              <option value="">Naturaleza</option>
+              {naturalezas.map((n) => <option key={n.id} value={n.id}>{n.nombre}</option>)}
+            </select>
+
+            <select name="habilidadId" defaultValue={modalData.habilidadId} required>
+              <option value="">Habilidad</option>
+              {habilidades.map((h) => <option key={h.id} value={h.id}>{h.nombre}</option>)}
+            </select>
+
+            <select name="objetoId" defaultValue={modalData.objetoId}>
+              <option value="">Objeto</option>
+              {objetos.map((o) => <option key={o.id} value={o.id}>{o.nombre}</option>)}
+            </select>
+
+            {[1, 2, 3, 4].map((n) => (
+              <select
+                key={n}
+                name={`movimiento${n}Id`}
+                defaultValue={modalData[`movimiento${n}Id`] || ''}
+                required={n === 1}
+              >
+                <option value="">{`Movimiento ${n}`}</option>
+                {movimientos.map((m) => <option key={m.id} value={m.id}>{m.nombre}</option>)}
+              </select>
+            ))}
+
+            <input name="ps" type="number" placeholder="PS" defaultValue={modalData.ps} required />
+            <input name="ataque" type="number" placeholder="Ataque" defaultValue={modalData.ataque} required />
+            <input name="defensa" type="number" placeholder="Defensa" defaultValue={modalData.defensa} required />
+            <input name="ataqueEspecial" type="number" placeholder="Ataque Especial" defaultValue={modalData.ataqueEspecial} required />
+            <input name="defensaEspecial" type="number" placeholder="Defensa Especial" defaultValue={modalData.defensaEspecial} required />
+            <input name="velocidad" type="number" placeholder="Velocidad" defaultValue={modalData.velocidad} required />
           </div>
-        </div>
-      )}
+
+          <input name="imagen" type="file" accept="image/*" />
+
+          <div className="modal-acciones">
+            <button type="submit" className="btn btn-guardar">Guardar</button>
+            <button type="button" className="btn btn-cancelar" onClick={cerrarModal}>Cancelar</button>
+          </div>
+        </form>
+      </div>
     </div>
+  )}
+</div>
+
   );
 }

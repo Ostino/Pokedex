@@ -1,0 +1,200 @@
+.perfil-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background-color: var(--color-gris-oscuro);
+  padding: 30px 40px;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra);
+  color: var(--color-blanco);
+}
+
+.perfil-title {
+  font-size: 2.2rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 2px solid var(--color-rojo);
+  padding-bottom: 6px;
+}
+
+.subtitulos {
+  margin-top: 2rem;
+  color: var(--color-blanco);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--color-rojo);
+  padding-bottom: 4px;
+}
+
+.perfil-buttons {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0 30px 0;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: var(--radio-borde);
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.btn-admin {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+  margin-bottom: 20px;
+  width: 100%;
+  font-size: 1.1rem;
+}
+
+.btn-admin:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+.btn-logout {
+  background-color: var(--color-blanco);
+  color: var(--color-rojo);
+  border: 2px solid var(--color-rojo);
+  flex: 1;
+  font-size: 1rem;
+}
+
+.btn-logout:hover {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+  border-color: var(--color-rojo-oscuro);
+}
+
+.no-equipos-msg {
+  font-style: italic;
+  color: var(--color-gris);
+  margin-bottom: 20px;
+}
+
+.lista-equipos {
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+.equipo-item {
+  background-color: var(--color-negro);
+  margin-bottom: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radio-borde);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4);
+}
+
+.equipo-actions button {
+  margin-left: 10px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radio-borde);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-editar {
+  background-color: var(--color-gris);
+  color: var(--color-negro);
+}
+
+.btn-editar:hover {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-eliminar {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-eliminar:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+.btn-crear-equipo {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+.btn-crear-equipo:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(18, 18, 18, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--color-blanco);
+  color: var(--color-negro);
+  padding: 25px 30px;
+  border-radius: var(--radio-borde);
+  min-width: 320px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-input {
+  padding: 10px;
+  border-radius: var(--radio-borde);
+  border: 1px solid var(--color-gris);
+  margin-top: 10px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-guardar {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.btn-guardar:hover {
+  background-color: var(--color-rojo-oscuro);
+}
+
+.btn-cancelar {
+  background-color: var(--color-gris);
+  color: var(--color-negro);
+  margin-left: 15px;
+}
+
+.btn-cancelar:hover {
+  background-color: var(--color-gris-oscuro);
+  color: var(--color-blanco);
+}
+
+/* Mensajes */
+.error-message {
+  color: var(--color-rojo);
+  font-weight: 700;
+  margin: 20px;
+  text-align: center;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 20px;
+  color: var(--color-gris);
+}

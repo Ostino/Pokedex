@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getProfile, logout as apiLogout, logoutAll as apiLogoutAll, getEquiposByEntrenadorId } from '../api/auth';
 import { AuthContext } from '../context/AuthContext';
 import { crearEquipo, eliminarEquipo } from '../api/equipos';
-
+import '../styles/perfil.css';
 export default function Perfil() {
   const [userData, setUserData] = useState(null);
   const [equipos, setEquipos] = useState([]);
@@ -63,83 +63,85 @@ export default function Perfil() {
       console.error('Error al crear equipo:', err);
     }
   };
-const handleEliminarEquipo = async (id) => {
-  if (!window.confirm('¿Estás seguro que quieres eliminar este equipo?')) return;
 
-  try {
-    await eliminarEquipo(id, token);
-    const dataEquipos = await getEquiposByEntrenadorId(userData.id, token);
-    setEquipos(dataEquipos.equipos || []);
-  } catch (err) {
-    console.error('Error al eliminar equipo:', err);
-  }
-};
+  const handleEliminarEquipo = async (id) => {
+    if (!window.confirm('¿Estás seguro que quieres eliminar este equipo?')) return;
+
+    try {
+      await eliminarEquipo(id, token);
+      const dataEquipos = await getEquiposByEntrenadorId(userData.id, token);
+      setEquipos(dataEquipos.equipos || []);
+    } catch (err) {
+      console.error('Error al eliminar equipo:', err);
+    }
+  };
 
   const goToAdminPage = () => navigate('/admin');
 
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (!userData) return <p>Cargando perfil...</p>;
+  if (error) return <p className="error-message">{error}</p>;
+  if (!userData) return <p className="loading-message">Cargando perfil...</p>;
 
   return (
-    <div>
-      <h2>Perfil</h2>
+    <div className="perfil-container">
+      <h2 className="perfil-title">Perfil</h2>
       <p><strong>Usuario:</strong> {userData.username}</p>
       <p><strong>Rol:</strong> {userData.rol}</p>
 
       {userData.rol === 2 && (
-        <button onClick={goToAdminPage}>Página Adm</button>
+        <button className="btn btn-admin" onClick={goToAdminPage}>Página Adm</button>
       )}
 
-      <button onClick={handleLogout}>Cerrar sesión</button>
-      <button onClick={handleLogoutAll}>Cerrar todas las sesiónes</button>
+      <div className="perfil-buttons">
+        <button className="btn btn-logout" onClick={handleLogout}>Cerrar sesión</button>
+        <button className="btn btn-logout" onClick={handleLogoutAll}>Cerrar todas las sesiónes</button>
+      </div>
 
-      <h3>Equipos del Entrenador</h3>
+      <h3 className="subtitulos">Equipos del Entrenador</h3>
+
       {equipos.length === 0 ? (
-        <p>No tiene equipos registrados.</p>
+        <p className="no-equipos-msg">No tiene equipos registrados.</p>
       ) : (
-        <ul>
-  {equipos.map((equipo) => (
-    <li key={equipo.id}>
-      <strong>Nombre:</strong> {equipo.nombre}
-      <button
-  onClick={() => navigate("/editar-equipo", { state: { equipo } })}
-        style={{ marginLeft: '10px' }}
-      >
-        Editar
-      </button>
-      <button
-        onClick={() => handleEliminarEquipo(equipo.id)}
-        style={{ marginLeft: '10px', color: 'red' }}
-      >
-        Eliminar
-      </button>
-    </li>
-  ))}
-</ul>
-
-
+        <ul className="lista-equipos">
+          {equipos.map((equipo) => (
+            <li key={equipo.id} className="equipo-item">
+              <span><strong>Nombre:</strong> {equipo.nombre}</span>
+              <div className="equipo-actions">
+                <button
+                  className="btn btn-editar"
+                  onClick={() => navigate("/editar-equipo", { state: { equipo } })}
+                >
+                  Editar
+                </button>
+                <button
+                  className="btn btn-eliminar"
+                  onClick={() => handleEliminarEquipo(equipo.id)}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
 
-      <button onClick={() => setShowModal(true)}>➕ Crear Equipo</button>
+      <button className="btn btn-crear-equipo" onClick={() => setShowModal(true)}>➕ Crear Equipo</button>
 
       {/* Modal */}
       {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex',
-          alignItems: 'center', justifyContent: 'center'
-        }}>
-          <div style={{ background: '#fff', padding: '20px', borderRadius: '10px', minWidth: '300px' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h3>Nuevo Equipo</h3>
             <input
+              className="modal-input"
               type="text"
               value={nuevoNombre}
               onChange={(e) => setNuevoNombre(e.target.value)}
               placeholder="Nombre del equipo"
             />
-            <br /><br />
-            <button onClick={handleCrearEquipo}>Guardar</button>
-            <button onClick={() => setShowModal(false)} style={{ marginLeft: '10px' }}>Cancelar</button>
+            <div className="modal-buttons">
+              <button className="btn btn-guardar" onClick={handleCrearEquipo}>Guardar</button>
+              <button className="btn btn-cancelar" onClick={() => setShowModal(false)}>Cancelar</button>
+            </div>
           </div>
         </div>
       )}

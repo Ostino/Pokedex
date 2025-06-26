@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-
+import '../styles/gestionEntrenadores.css';
 export default function AdminEntrenadores() {
   const [entrenadores, setEntrenadores] = useState([]);
   const [mostrar, setMostrar] = useState(false);
@@ -69,57 +69,64 @@ export default function AdminEntrenadores() {
   };
 
   return (
-    <div>
-      <h2 onClick={() => setMostrar(!mostrar)} style={{ cursor: 'pointer', userSelect: 'none' }}>
-        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} gestión de entrenadores
-      </h2>
+    <div className="gestion-container">
+  <h2 className="gestion-titulo" onClick={() => setMostrar(!mostrar)}>
+    {mostrar ? '▼ Ocultar' : '▶ Mostrar'} gestión de entrenadores
+  </h2>
 
-      {mostrar && (
-        <>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <table border="1" cellPadding="8" style={{ marginTop: '10px' }}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entrenadores.map((ent) => (
-                <tr key={ent.id}>
-                  <td>{ent.id}</td>
-                  <td>{ent.username}</td>
-                  <td>{ent.rol === 2 ? 'Admin' : 'Usuario'}</td>
-                  <td>
-                    <button
-                      onClick={() => hacerAdmin(ent.id)}
-                      disabled={ent.rol === 2}
-                    >
-                      Promover a admin
-                    </button>
-                    <button
-                      onClick={() => quitarAdmin(ent.id)}
-                      disabled={ent.rol === 1 || ent.username === 'admin'}
-                      title={
-                        ent.username === 'admin'
-                          ? 'No se puede degradar al usuario principal "admin"'
-                          : ''
-                      }
-                    >
-                      Degradar a usuario
-                    </button>
-                    <button onClick={() => cambiarPassword(ent.id)}>
-                      Cambiar contraseña
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-    </div>
+  {mostrar && (
+    <>
+      {error && <p className="mensaje-error">{error}</p>}
+
+      <table className="tabla-entrenadores">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {entrenadores.map((ent) => (
+            <tr key={ent.id}>
+              <td>{ent.id}</td>
+              <td>{ent.username}</td>
+              <td>{ent.rol === 2 ? 'Admin' : 'Usuario'}</td>
+              <td className="acciones">
+                <button
+                  className="btn btn-promover"
+                  onClick={() => hacerAdmin(ent.id)}
+                  disabled={ent.rol === 2}
+                >
+                  Promover a admin
+                </button>
+                <button
+                  className="btn btn-degradar"
+                  onClick={() => quitarAdmin(ent.id)}
+                  disabled={ent.rol === 1 || ent.username === 'admin'}
+                  title={
+                    ent.username === 'admin'
+                      ? 'No se puede degradar al usuario principal "admin"'
+                      : ''
+                  }
+                >
+                  Degradar a usuario
+                </button>
+                <button
+                  className="btn btn-password"
+                  onClick={() => cambiarPassword(ent.id)}
+                >
+                  Cambiar contraseña
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )}
+</div>
+
   );
 }

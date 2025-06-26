@@ -6,6 +6,7 @@ import {
   eliminarObjeto,
 } from '../api/objetos';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/objetosCrud.css';
 
 export default function ObjetosCrud() {
   const { token } = useContext(AuthContext);
@@ -73,74 +74,72 @@ export default function ObjetosCrud() {
   };
 
   return (
-    <div>
-      <h2
-        onClick={() => setMostrar(!mostrar)}
-        style={{ cursor: 'pointer', userSelect: 'none' }}
-      >
-        {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Objetos
-      </h2>
+    <div className="objetos-container">
+  <h2 className="objetos-titulo" onClick={() => setMostrar(!mostrar)}>
+    {mostrar ? '▼ Ocultar' : '▶ Mostrar'} CRUD de Objetos
+  </h2>
 
-      {mostrar && (
-        <>
-          <button onClick={() => abrirModal()}>Crear nuevo objeto</button>
+  {mostrar && (
+    <>
+      <button className="btn btn-nuevo" onClick={() => abrirModal()}>
+        Crear nuevo objeto
+      </button>
 
-          <ul>
-            {objetos.map((obj) => (
-              <li key={obj.id}>
-                <strong>{obj.nombre}</strong> - {obj.descripcion}
-                <img
-                  src={generarRutaImagen(obj.nombre)}
-                  alt={obj.nombre}
-                  width={50}
-                  style={{ marginLeft: '10px' }}
-                  onError={(e) => (e.target.style.display = 'none')}
-                />
-                <button onClick={() => abrirModal(obj)}>Editar</button>
-                <button onClick={() => handleEliminar(obj.id)}>Eliminar</button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <ul className="lista-objetos">
+        {objetos.map((obj) => (
+          <li key={obj.id} className="item-objeto">
+            <strong>{obj.nombre}</strong> - {obj.descripcion}
+            <img
+              src={generarRutaImagen(obj.nombre)}
+              alt={obj.nombre}
+              width={50}
+              className="imagen-objeto"
+              onError={(e) => (e.target.style.display = 'none')}
+            />
+            <div className="acciones">
+              <button className="btn btn-editar" onClick={() => abrirModal(obj)}>Editar</button>
+              <button className="btn btn-eliminar" onClick={() => handleEliminar(obj.id)}>Eliminar</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
 
-      {modalData && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>{modalData?.id ? 'Editar Objeto' : 'Nuevo Objeto'}</h3>
-            <form onSubmit={handleSubmit}>
-              <label>Nombre:</label>
-              <input
-                name="nombre"
-                defaultValue={modalData?.nombre || ''}
-                placeholder="Nombre"
-                required
-              />
-              <br />
-              <label>Descripción:</label>
-              <textarea
-                name="descripcion"
-                defaultValue={modalData?.descripcion || ''}
-                placeholder="Descripción"
-              />
-              <br />
-              <label>Imagen:</label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg"
-                onChange={(e) => setImagen(e.target.files[0])}
-              />
-              <br />
-              <div style={{ marginTop: '10px' }}>
-                <button type="submit">Guardar</button>
-                <button type="button" onClick={cerrarModal}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
+  {modalData && (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h3>{modalData?.id ? 'Editar Objeto' : 'Nuevo Objeto'}</h3>
+        <form onSubmit={handleSubmit}>
+          <label>Nombre:</label>
+          <input
+            name="nombre"
+            defaultValue={modalData?.nombre || ''}
+            placeholder="Nombre"
+            required
+          />
+          <label>Descripción:</label>
+          <textarea
+            name="descripcion"
+            defaultValue={modalData?.descripcion || ''}
+            placeholder="Descripción"
+          />
+          <label>Imagen:</label>
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={(e) => setImagen(e.target.files[0])}
+          />
+
+          <div className="modal-acciones">
+            <button type="submit" className="btn btn-guardar">Guardar</button>
+            <button type="button" className="btn btn-cancelar" onClick={cerrarModal}>Cancelar</button>
           </div>
-        </div>
-      )}
+        </form>
+      </div>
     </div>
+  )}
+</div>
+
   );
 }

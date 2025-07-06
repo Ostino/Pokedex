@@ -24,13 +24,13 @@ export const crearEVs = async (evs, token) => {
   const res = await axios.post(`http://localhost:3000/api/evs`, evs, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.data; // contiene el id del EV creado
+  return res.data;
 };
 export const crearIVs = async (ivs, token) => {
   const res = await axios.post(`http://localhost:3000/api/ivs`, ivs, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.data; // contiene el id del IV creado
+  return res.data;
 };
 
 export const crearPokemonAlt = async (pokemonAltData, token) => {

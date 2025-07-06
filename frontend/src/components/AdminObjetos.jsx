@@ -13,7 +13,7 @@ export default function ObjetosCrud() {
   const [objetos, setObjetos] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [imagen, setImagen] = useState(null);
-  const [mostrar, setMostrar] = useState(false); // Estado para el pliegue/despliegue
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
     const cargar = async () => {

@@ -94,7 +94,6 @@ export default function PokemonBaseCrud() {
   }
 };
 
-
   const cerrarModal = () => setModalData(null);
 
   const handleSubmit = async (e) => {

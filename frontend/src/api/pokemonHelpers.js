@@ -1,4 +1,3 @@
-// pokemonbaseHelpers.js
 import axios from 'axios';
 
 const headers = (token) => ({

@@ -36,7 +36,6 @@ export default function EditEquipo() {
   const [movimientos, setMovimientos] = useState([]);
 const [pokemonVerId, setPokemonVerId] = useState(null);
 
-  // Estados para select controlados
   const [naturalezaSeleccionada, setNaturalezaSeleccionada] = useState(null);
   const [habilidadSeleccionada, setHabilidadSeleccionada] = useState(null);
   const [objetoSeleccionado, setObjetoSeleccionado] = useState(null);
@@ -508,7 +507,6 @@ return (
         }
       }
 
-      // VALIDACIONES DE EVs
       let totalEVs = 0;
       for (const stat in evs) {
         const val = evs[stat];

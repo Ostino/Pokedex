@@ -56,7 +56,6 @@ export default function Perfil() {
       await crearEquipo(nuevoNombre, token);
       setNuevoNombre('');
       setShowModal(false);
-      // Recargar equipos
       const dataEquipos = await getEquiposByEntrenadorId(userData.id, token);
       setEquipos(dataEquipos.equipos || []);
     } catch (err) {
@@ -126,7 +125,6 @@ export default function Perfil() {
 
       <button className="btn btn-crear-equipo" onClick={() => setShowModal(true)}>➕ Crear Equipo</button>
 
-      {/* Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">

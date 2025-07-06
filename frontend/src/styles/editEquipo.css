@@ -1,5 +1,3 @@
-/* editEquipo.css */
-
 .edit-equipo-container {
   max-width: 900px;
   margin: 0 auto;
@@ -12,7 +10,7 @@
 }
 
 .titulo-principal {
-  color: #b71c1c; /* rojo oscuro */
+  color: #b71c1c;
   font-size: 2.2rem;
   margin-bottom: 10px;
   text-align: center;
@@ -107,7 +105,7 @@
   height: 20px;
   vertical-align: middle;
   margin: 0 4px;
-  image-rendering: auto; /* evita pixelado */
+  image-rendering: auto;
   object-fit: contain;
   border-radius: 3px;
   box-shadow: 0 0 3px #ccc;

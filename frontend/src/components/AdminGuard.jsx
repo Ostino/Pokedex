@@ -15,22 +15,22 @@ export default function AdminGuard({ children }) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          validateStatus: () => true, // permite capturar todos los códigos
+          validateStatus: () => true,
         });
 
         if (response.status === 200) {
-          setChecking(false); // acceso permitido
+          setChecking(false);
         } else if (response.status === 403) {
-          navigate('/profile'); // acceso denegado, pero token válido
+          navigate('/profile');
         } else if (response.status === 401) {
-          logout(); // token inválido
+          logout();
           navigate('/login');
         } else {
-          logout(); // fallback por seguridad
+          logout();
           navigate('/login');
         }
       } catch (err) {
-        logout(); // en caso de fallo inesperado
+        logout();
         navigate('/login');
       }
     };

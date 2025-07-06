@@ -17,7 +17,6 @@ export const getMovimientoPorId = async (id, token) => {
 };
 
 export async function crearMovimiento(datos, token) {
-  // datos es un objeto JSON con los campos esperados
   const res = await axios.post(`${BASE_URL}/movimientos`, datos, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -45,12 +44,10 @@ export const eliminarMovimiento = async (id, token) => {
 
 export const getTipos = async () => {
   const res = await axios.get(`${BASE_URL}/tipos`);
-  //console.log("Todos los tipos ",res.data)
   return res.data;
 };
 
 export const getCategoriasMovimiento = async () => {
   const res = await axios.get(`${BASE_URL}/categoriamov`);
-    //console.log("Todos los tipos de movimientos ",res.data)
   return res.data;
 };

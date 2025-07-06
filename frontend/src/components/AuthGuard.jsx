@@ -11,12 +11,11 @@ export default function AuthGuard({ children }) {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        await getProfile(token); // verifica token
+        await getProfile(token);
         setChecking(false);
       } catch (err) {
-        // Si hay error 401, el token es inválido o expiró
-        logout(); // borra token de sessionStorage
-        navigate('/login'); // redirige
+        logout();
+        navigate('/login');
       }
     };
 

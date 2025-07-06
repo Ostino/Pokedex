@@ -16,7 +16,7 @@ export default function MovimientosCrud() {
   const [tipos, setTipos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [modalData, setModalData] = useState(null);
-  const [mostrar, setMostrar] = useState(false); // Lógica para plegue/despliegue
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -13,7 +13,6 @@ export default function Register() {
     try {
       const response = await apiRegister(form);
 
-      // Si el backend devuelve código 201, redirige al login
       if (response.status === 201 || response.status === '201') {
         navigate('/login');
       } else {

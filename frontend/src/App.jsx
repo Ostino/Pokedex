@@ -13,15 +13,11 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rutas públicas */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* Ruta protegida usando AuthGuard */}
           <Route path="/profile" element={ <AuthGuard><Profile /></AuthGuard>}/>
           <Route path="/admin" element={ <AdminGuard><AdminPage /></AdminGuard> }/>
           <Route path="/editar-equipo" element={<AuthGuard><EditEquipo /></AuthGuard>} />
-
-          {/* Redirección raíz */}
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>

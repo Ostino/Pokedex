@@ -1,7 +1,6 @@
 const Entrenador = require('../models/Entrenador.model')
 const bcrypt = require('bcryptjs');
 
-// Obtener todos los entrenadores
 exports.obtenerEntrenadores = async (req, res) => {
   try {
     const entrenadores = await Entrenador.findAll();
@@ -11,7 +10,6 @@ exports.obtenerEntrenadores = async (req, res) => {
   }
 };
 
-// Obtener un entrenador por ID
 exports.obtenerEntrenador = async (req, res) => {
   try {
     const entrenador = await Entrenador.findByPk(req.params.id);
@@ -22,7 +20,6 @@ exports.obtenerEntrenador = async (req, res) => {
   }
 };
 
-// Obtener datos del usuario autenticado (/me)
 exports.obtenerPerfil = async (req, res) => {
   try {
     res.json({
@@ -35,7 +32,6 @@ exports.obtenerPerfil = async (req, res) => {
   }
 };
 
-// Actualizar un entrenador
 exports.actualizarEntrenador = async (req, res) => {
   try {
     const entrenador = await Entrenador.findByPk(req.params.id);
@@ -52,7 +48,6 @@ exports.actualizarEntrenador = async (req, res) => {
   }
 };
 
-// Eliminar un entrenador
 exports.eliminarEntrenador = async (req, res) => {
   try {
     const entrenador = await Entrenador.findByPk(req.params.id);
@@ -65,7 +60,6 @@ exports.eliminarEntrenador = async (req, res) => {
   }
 };
 
-// Convertir a admin (rol = 2)
 exports.hacerAdmin = async (req, res) => {
   try {
     const entrenador = await Entrenador.findByPk(req.params.id);
@@ -79,7 +73,6 @@ exports.hacerAdmin = async (req, res) => {
   }
 };
 
-// Quitar rol de admin (rol = 1)
 exports.quitarAdmin = async (req, res) => {
   try {
     const entrenador = await Entrenador.findByPk(req.params.id);
@@ -93,12 +86,9 @@ exports.quitarAdmin = async (req, res) => {
   }
 };
 
-// Cambiar contraseña
 exports.cambiarPassword = async (req, res) => {
   const { id } = req.params;
   const { nuevaPassword } = req.body;
-  console.log("Nueva contraseña antes de hasheo ", nuevaPassword)
-    console.log("Mi id es ", id)
 
   if (!nuevaPassword ) {
     return res.status(400).json({ error: 'La contraseña debe tener un valor' });
@@ -106,7 +96,6 @@ exports.cambiarPassword = async (req, res) => {
 
   try {
     const entrenador = await Entrenador.findByPk(id);
-    console.log("Mi entrenador es ", entrenador)
     if (!entrenador) {
       return res.status(404).json({ error: 'Entrenador no encontrado' });
     }

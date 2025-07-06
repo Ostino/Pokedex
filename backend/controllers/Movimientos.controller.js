@@ -26,7 +26,6 @@ exports.obtenerTodos = async (req, res) => {
 
 exports.obtenerPorId = async (req, res) => {
   try {
-    console.log("El id de mi movimiento es :",req.params.id )
     const mov = await Movimiento.findByPk(req.params.id, {
       include: [
         { model: Tipo, as: 'tipo' },

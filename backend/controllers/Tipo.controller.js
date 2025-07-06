@@ -1,6 +1,5 @@
 const Tipo = require('../models/Tipo.model');
 
-// Obtener todos los tipos
 exports.obtenerTipos = async (req, res) => {
   try {
     const tipos = await Tipo.findAll();
@@ -10,7 +9,6 @@ exports.obtenerTipos = async (req, res) => {
   }
 };
 
-// Obtener un tipo por ID
 exports.obtenerTipo = async (req, res) => {
   try {
     const tipo = await Tipo.findByPk(req.params.id);

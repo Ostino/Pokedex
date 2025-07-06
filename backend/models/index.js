@@ -18,7 +18,6 @@ const CategoriaMov = require('./CategoriaMov.model');
 const Evs = require('./Evs.model');
 const Ivs = require('./Ivs.model');
 
-// Registro de modelos
 const models = {
   sequelize,
   Sequelize,

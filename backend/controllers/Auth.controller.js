@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secreto';
 
-// Registro
 exports.register = async (req, res) => {
   try {
     const { username, password,email } = req.body;
@@ -23,7 +22,6 @@ exports.register = async (req, res) => {
   }
 };
 
-// Login
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -44,7 +42,6 @@ exports.login = async (req, res) => {
   }
 };
 
-// Logout
 exports.logout = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -57,7 +54,6 @@ exports.logout = async (req, res) => {
   }
 };
 
-// LogoutAll
 exports.logoutAll = async (req, res) => {
   try {
     const entrenadorId = req.user.id;

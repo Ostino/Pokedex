@@ -46,7 +46,6 @@ exports.actualizar = async (req, res) => {
       return res.status(404).json({ error: 'Objeto no encontrado para actualizar' });
     }
 
-    // Si llega una nueva imagen: eliminar la anterior y asignar la nueva
     if (req.file) {
       const rutaAnterior = path.join(__dirname, '..', 'Imagenes', 'Objetos', objeto.imagen);
       if (fs.existsSync(rutaAnterior)) {
@@ -55,13 +54,11 @@ exports.actualizar = async (req, res) => {
       objeto.imagen = req.file.filename;
     }
 
-    // Si se cambia el nombre pero no se envió nueva imagen
     if (req.body.nombre && !req.file) {
       const nombreAntiguo = objeto.nombre;
       const nombreNuevo = req.body.nombre;
-      const extension = path.extname(objeto.imagen); // ej: .png
+      const extension = path.extname(objeto.imagen);
 
-      // Renombrar archivo de imagen actual
       const rutaAnterior = path.join(__dirname, '..', 'Imagenes', 'Objetos', objeto.imagen);
       const nuevoNombreImagen = nombreNuevo.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]/g, '') + extension;
       const nuevaRuta = path.join(__dirname, '..', 'Imagenes', 'Objetos', nuevoNombreImagen);
@@ -72,7 +69,6 @@ exports.actualizar = async (req, res) => {
       }
     }
 
-    // Actualizar los campos del objeto
     if (req.body.nombre !== undefined) objeto.nombre = req.body.nombre;
     if (req.body.descripcion !== undefined) objeto.descripcion = req.body.descripcion;
 
@@ -86,22 +82,18 @@ exports.actualizar = async (req, res) => {
 
 exports.eliminar = async (req, res) => {
   try {
-    // Buscar el Pokémon primero para obtener el nombre del archivo de imagen
     const objeto = await Objeto.findByPk(req.params.id);
 
     if (!objeto) {
       return res.status(404).json({ error: 'Objeto no encontrado para eliminar' });
     }
 
-    // Ruta completa al archivo de imagen
     const rutaImagen = path.join(__dirname, '..', 'Imagenes', 'Objetos', objeto.imagen);
 
-    // Eliminar la imagen si existe
     if (fs.existsSync(rutaImagen)) {
       fs.unlinkSync(rutaImagen);
     }
 
-    // Eliminar el Pokémon de la base de datos
     await objeto.destroy();
 
     res.json({ mensaje: 'objeto eliminado correctamente, incluyendo su imagen.' });

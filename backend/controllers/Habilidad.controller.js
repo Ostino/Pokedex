@@ -1,6 +1,5 @@
 const { Habilidades } = require('../models');
 
-// Crear habilidad
 exports.crearHabilidad = async (req, res) => {
   try {
     const { nombre, descripcion } = req.body;
@@ -11,7 +10,6 @@ exports.crearHabilidad = async (req, res) => {
   }
 };
 
-// Obtener una habilidad por ID
 exports.obtenerHabilidad = async (req, res) => {
   try {
     const habilidad = await Habilidades.findByPk(req.params.id);
@@ -24,7 +22,6 @@ exports.obtenerHabilidad = async (req, res) => {
   }
 };
 
-// Obtener todas las habilidades
 exports.obtenerHabilidades = async (req, res) => {
   try {
     const habilidades = await Habilidades.findAll();

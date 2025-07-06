@@ -32,7 +32,6 @@ const Stats = sequelize.define('Stats', {
     allowNull: false
   },
 
-  // FK para relacionar con PokemonAlt, si es el Stats de un PokemonAlt
   pokemonAltId: {
     type: DataTypes.INTEGER,
     allowNull: false,

@@ -52,6 +52,7 @@ exports.obtenerPorId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener Pokémon', detalles: error.message });
   }
 };
+
 exports.obtenerPorEntrenadorId = async (req, res) => {
   try {
     const { entrenadorId } = req.params;
@@ -80,10 +81,10 @@ exports.obtenerPorEntrenadorId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los Pokémon del entrenador', detalles: error.message });
   }
 };
+
 exports.obtenerPorEquipoId = async (req, res) => {
   try {
     const { equipoId } = req.params;
-    console.log("El equipo es backend ",equipoId)
     const pokemons = await PokemonAlt.findAll({
       where: { equipoId },
       include: [
@@ -108,6 +109,7 @@ exports.obtenerPorEquipoId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los Pokémon del equipo', detalles: error.message });
   }
 };
+
 exports.crear = async (req, res) => {
   try {
     const data = req.body;
@@ -117,7 +119,6 @@ exports.crear = async (req, res) => {
     res.status(400).json({ error: 'Error al crear Pokémon', detalles: error.message });
   }
 };
-
 
 exports.actualizar = async (req, res) => {
   try {
@@ -134,21 +135,16 @@ exports.actualizar = async (req, res) => {
 exports.eliminarPokemonAlt = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("Se está por borrar el PokémonAlt con id:", id);
 
-    // 1. Buscar el PokémonAlt
     const pokemon = await PokemonAlt.findByPk(id);
     if (!pokemon) {
       return res.status(404).json({ error: 'PokémonAlt no encontrado' });
     }
 
-    // 2. Eliminar primero las Stats asociadas (si existen)
     await Stats.destroy({ where: { pokemonAltId: id } });
 
-    // 3. Eliminar el PokémonAlt
     await PokemonAlt.destroy({ where: { id } });
 
-    // 4. Eliminar EVs e IVs asociados
     if (pokemon.evsId) await Evs.destroy({ where: { id: pokemon.evsId } });
     if (pokemon.ivsId) await Ivs.destroy({ where: { id: pokemon.ivsId } });
 

@@ -22,7 +22,6 @@ const Equipo = sequelize.define('Equipo', {
   },
 });
 
-// Relación con Entrenador
 Equipo.associate = (models) => {
   Equipo.belongsTo(models.Entrenador, {
     foreignKey: 'entrenadorId',

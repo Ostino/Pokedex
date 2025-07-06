@@ -36,7 +36,6 @@ exports.obtenerPorId = async (req, res) => {
   }
 };
 
-// Crear un nuevo equipo
 exports.createEquipo = async (req, res) => {
   try {
     const entrenadorId = req.user.id;
@@ -51,7 +50,6 @@ exports.createEquipo = async (req, res) => {
   }
 };
 
-// Actualizar un equipo existente
 exports.updateEquipo = async (req, res) => {
   try {
         const entrenadorId = req.user.id;
@@ -70,7 +68,6 @@ exports.updateEquipo = async (req, res) => {
   }
 };
 
-// Eliminar un equipo
 exports.deleteEquipo = async (req, res) => {
   try {
     const { id } = req.params;

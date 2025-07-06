@@ -1,6 +1,5 @@
 const { Stats } = require('../models');
 
-// Crear Stats
 exports.crearStats = async (req, res) => {
   try {
     const nuevo = await Stats.create(req.body);
@@ -10,7 +9,6 @@ exports.crearStats = async (req, res) => {
   }
 };
 
-// Obtener todos los Stats
 exports.obtenerTodos = async (req, res) => {
   try {
     const todos = await Stats.findAll();
@@ -20,7 +18,6 @@ exports.obtenerTodos = async (req, res) => {
   }
 };
 
-// Obtener Stats por id
 exports.obtenerPorId = async (req, res) => {
   try {
     const stats = await Stats.findByPk(req.params.id);
@@ -33,7 +30,6 @@ exports.obtenerPorId = async (req, res) => {
   }
 };
 
-// Actualizar Stats por id
 exports.actualizar = async (req, res) => {
   try {
     const stats = await Stats.findByPk(req.params.id);
@@ -47,7 +43,6 @@ exports.actualizar = async (req, res) => {
   }
 };
 
-// Eliminar Stats por id
 exports.eliminar = async (req, res) => {
   try {
     const eliminado = await Stats.destroy({

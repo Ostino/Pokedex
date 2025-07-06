@@ -1,4 +1,4 @@
-const { Token, Entrenador } = require('../models'); // <-- este sí tiene las asociaciones aplicadas
+const { Token, Entrenador } = require('../models');
 
 
 const requireUser = async (req, res, next) => {

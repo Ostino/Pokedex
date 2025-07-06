@@ -1,6 +1,5 @@
 const { Naturaleza } = require('../models');
 
-// Obtener todas las naturalezas
 exports.obtenerTodas = async (req, res) => {
   try {
     const naturalezas = await Naturaleza.findAll();
@@ -10,7 +9,6 @@ exports.obtenerTodas = async (req, res) => {
   }
 };
 
-// Obtener una naturaleza por ID
 exports.obtenerUna = async (req, res) => {
   try {
     const { id } = req.params;

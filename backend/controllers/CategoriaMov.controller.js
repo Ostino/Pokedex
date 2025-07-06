@@ -1,6 +1,5 @@
 const CategoriaMov = require('../models/CategoriaMov.model');
 
-// Obtener una categoría por ID
 exports.obtenerCategoria = async (req, res) => {
   try {
     const categoria = await CategoriaMov.findByPk(req.params.id);
@@ -13,7 +12,6 @@ exports.obtenerCategoria = async (req, res) => {
   }
 };
 
-// Obtener todas las categorías
 exports.obtenerCategorias = async (req, res) => {
   try {
     const categorias = await CategoriaMov.findAll();

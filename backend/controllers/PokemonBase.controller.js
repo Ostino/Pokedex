@@ -12,7 +12,6 @@ exports.crearPokemonBase = async (req, res) => {
     console.log("Llegue al controlador de crear Pokemon")
     const data = req.body;
     console.log("Este es mi req.body",req.body)
-    // Validar duplicado en numeroPokedex
     const existente = await PokemonBase.findOne({
       where: { numeroPokedex: data.numeroPokedex }
     });
@@ -21,7 +20,6 @@ exports.crearPokemonBase = async (req, res) => {
       return res.status(409).json({ error: 'Ya existe un Pokémon con ese número en la Pokédex' });
     }
 
-    // Si se subió imagen, agregarla
     if (req.file) {
       data.imagen = req.file.filename;
     }
@@ -93,7 +91,6 @@ exports.actualizar = async (req, res) => {
       return res.status(404).json({ error: 'Pokémon no encontrado para actualizar' });
     }
 
-    // Validar duplicado en numeroPokedex si llega uno nuevo
     if (data.numeroPokedex && data.numeroPokedex != pokemon.numeroPokedex) {
       const existente = await PokemonBase.findOne({
         where: { numeroPokedex: data.numeroPokedex }
@@ -104,12 +101,10 @@ exports.actualizar = async (req, res) => {
       }
     }
 
-    // Si llega nueva imagen
     if (req.file) {
       data.imagen = req.file.filename;
     } else if (data.nombre && data.nombre !== pokemon.nombre) {
-      // Si cambia el nombre, renombrar imagen existente
-      const extension = path.extname(pokemon.imagen); // Ej: .png
+      const extension = path.extname(pokemon.imagen);
       const nuevoNombreImagen = `${data.nombre}${extension}`;
 
       const rutaAnterior = path.join(__dirname, '..', 'Imagenes', 'Pokemons', pokemon.imagen);
@@ -119,7 +114,7 @@ exports.actualizar = async (req, res) => {
         fs.renameSync(rutaAnterior, rutaNueva);
         data.imagen = nuevoNombreImagen;
       } else {
-        console.warn(`⚠️ Imagen no encontrada para renombrar: ${rutaAnterior}`);
+        console.warn(`Imagen no encontrada para renombrar: ${rutaAnterior}`);
       }
     }
 
@@ -133,22 +128,17 @@ exports.actualizar = async (req, res) => {
 
 exports.eliminar = async (req, res) => {
   try {
-    // Buscar el Pokémon primero para obtener el nombre del archivo de imagen
     const pokemon = await PokemonBase.findByPk(req.params.id);
 
     if (!pokemon) {
       return res.status(404).json({ error: 'Pokémon no encontrado para eliminar' });
     }
-
-    // Ruta completa al archivo de imagen
     const rutaImagen = path.join(__dirname, '..', 'Imagenes', 'Pokemons', pokemon.imagen);
 
-    // Eliminar la imagen si existe
     if (fs.existsSync(rutaImagen)) {
       fs.unlinkSync(rutaImagen);
     }
 
-    // Eliminar el Pokémon de la base de datos
     await pokemon.destroy();
 
     res.json({ mensaje: 'Pokémon eliminado correctamente, incluyendo su imagen.' });
@@ -259,7 +249,6 @@ exports.actualizarStatsBase = async (req, res) => {
   }
 };
 
-
 exports.obtenerStatsBasePorPokemonBaseId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -274,7 +263,7 @@ exports.obtenerStatsBasePorPokemonBaseId = async (req, res) => {
 
     return res.json(stats);
   } catch (error) {
-    console.error('❌ Error al obtener stats base:', error);
+    console.error('Error al obtener stats base:', error);
     return res.status(500).json({ error: 'Error al obtener stats base', detalles: error.message });
   }
 };

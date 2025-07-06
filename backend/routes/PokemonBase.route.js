@@ -5,7 +5,6 @@ const PokemonBaseController = require('../controllers/PokemonBase.controller');
 const requireUser = require('../middlewares/requiredUser');
 const requireAdmin = require('../middlewares/requiredAdmin');
 
-// CRUD protegido solo para usuarios autenticados
 router.post('/',requireUser,requireAdmin,upload.single('imagen'),PokemonBaseController.crearPokemonBase);
 router.get('/', requireUser, PokemonBaseController.obtenerTodos);
 router.get('/verificar-numero/:numeroPokedex', requireUser,PokemonBaseController.verificarNumeroPokedex);

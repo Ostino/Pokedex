@@ -1,6 +1,5 @@
 const { Evs } = require('../models');
 
-// Crear nuevo registro IVs
 exports.crearEvs = async (req, res) => {
   try {
     const nuevo = await Evs.create(req.body);
@@ -10,7 +9,6 @@ exports.crearEvs = async (req, res) => {
   }
 };
 
-// Obtener todos los Evs
 exports.obtenerTodos = async (req, res) => {
   try {
     const evs = await Evs.findAll();
@@ -20,7 +18,6 @@ exports.obtenerTodos = async (req, res) => {
   }
 };
 
-// Obtener un Evs por id
 exports.obtenerPorId = async (req, res) => {
   try {
     const ev = await Evs.findByPk(req.params.id);
@@ -33,7 +30,6 @@ exports.obtenerPorId = async (req, res) => {
   }
 };
 
-// Actualizar Evs por id
 exports.actualizar = async (req, res) => {
   try {
     const ev = await Evs.findByPk(req.params.id);

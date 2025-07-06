@@ -1,6 +1,5 @@
 const { Ivs } = require('../models');
 
-// Crear nuevo registro IVs
 exports.crearIvs = async (req, res) => {
   try {
     const nuevo = await Ivs.create(req.body);
@@ -10,7 +9,6 @@ exports.crearIvs = async (req, res) => {
   }
 };
 
-// Obtener todos los IVs
 exports.obtenerTodos = async (req, res) => {
   try {
     const ivs = await Ivs.findAll();
@@ -20,7 +18,6 @@ exports.obtenerTodos = async (req, res) => {
   }
 };
 
-// Obtener un IV por id
 exports.obtenerPorId = async (req, res) => {
   try {
     const iv = await Ivs.findByPk(req.params.id);
@@ -33,7 +30,6 @@ exports.obtenerPorId = async (req, res) => {
   }
 };
 
-// Actualizar IVs por id
 exports.actualizar = async (req, res) => {
   try {
     const iv = await Ivs.findByPk(req.params.id);
@@ -46,5 +42,3 @@ exports.actualizar = async (req, res) => {
     res.status(400).json({ error: 'Error al actualizar IVs', detalles: error.message });
   }
 };
-
-//

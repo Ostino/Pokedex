@@ -62,26 +62,7 @@ app.use('/api/ivs',ivsRoutes)
 app.use('/api/evs',evsRoutes)
 app.use('/api/stats',statsRoutes)
 
-
-
 const  Entrenador  = require('./models/Entrenador.model');
-const { CategoriaMov } = require('./models');
-async function asignarAdmin(id) {
-  const usuario = await Entrenador.findOne({ where: { id } });
-
-  if (usuario) {
-    if (usuario.rol !== 2) {
-      usuario.rol = 2;
-      await usuario.save();
-      console.log(`El usuario ${usuario.id} ahora es admin (rol 2)`);
-    } else {
-      console.log(`ℹEl usuario ${usuario.id} ya es admin`);
-    }
-  } else {
-    console.log('No se encontró el usuario para hacer admin');
-  }
-}
-
 async function crearAdminSiNoExiste() {
   try {
     const adminExistente = await Entrenador.findOne({ where: { username: 'admin' } });
@@ -96,7 +77,7 @@ async function crearAdminSiNoExiste() {
       username: 'admin',
       password: passwordHash,
       email: 'admin@email.com',
-      rol: 2, // admin
+      rol: 2,
     });
 
     console.log('Usuario admin creado:', nuevoAdmin.username);

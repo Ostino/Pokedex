@@ -123,7 +123,7 @@ export default function Perfil() {
         </ul>
       )}
 
-      <button className="btn btn-crear-equipo" onClick={() => setShowModal(true)}>➕ Crear Equipo</button>
+      <button className="btn btn-crear-equipo" onClick={() => setShowModal(true)}>Crear Equipo</button>
 
       {showModal && (
         <div className="modal-overlay">

@@ -159,9 +159,9 @@ export default function MovimientosCrud() {
             />
           )}
 
-          <input name="potencia" type="number" placeholder="Potencia" defaultValue={modalData.potencia} />
-          <input name="pp" type="number" placeholder="PP" defaultValue={modalData.pp} />
-          <input name="precision" type="number" placeholder="Precisión" defaultValue={modalData.precision} />
+          <input name="potencia" type="number" placeholder="Potencia" defaultValue={modalData.potencia} required/>
+          <input name="pp" type="number" placeholder="PP" defaultValue={modalData.pp} required/>
+          <input name="precision" type="number" placeholder="Precisión" defaultValue={modalData.precision} required />
 
           <div className="modal-acciones">
             <button type="submit" className="btn btn-guardar">Guardar</button>

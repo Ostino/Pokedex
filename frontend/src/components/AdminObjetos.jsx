@@ -123,12 +123,14 @@ export default function ObjetosCrud() {
             name="descripcion"
             defaultValue={modalData?.descripcion || ''}
             placeholder="Descripción"
+            required
           />
           <label>Imagen:</label>
           <input
             type="file"
             accept="image/png, image/jpeg"
             onChange={(e) => setImagen(e.target.files[0])}
+            required
           />
 
           <div className="modal-acciones">

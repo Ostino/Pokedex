@@ -8,7 +8,7 @@ export default function AuthTarjeta({ titulo, subtitulo, children }) {
       <section className="auth-tarjeta" aria-labelledby="auth-titulo">
         <header className="auth-banda">
           <span className="auth-pokeball" aria-hidden="true" />
-          <span className="auth-marca">Pokédex</span>
+          <span className="auth-marca">DemoDex</span>
         </header>
         <div className="auth-cuerpo">
           <h1 id="auth-titulo" className="auth-titulo">{titulo}</h1>

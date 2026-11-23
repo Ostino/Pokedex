@@ -1,15 +1,3 @@
-npm init -y
+# Backend del Pokedex
 
-npm install express
-
-npm install --save-dev nodemon
-
-npm install cors
-
-npm install sequelize sqlite3
-
-npm install multer
-
-npm install jsonwebtoken
-
-npm install bcryptjs
+La documentación (instalación, variables de entorno, tests y despliegue) está en el [README principal](../README.md).

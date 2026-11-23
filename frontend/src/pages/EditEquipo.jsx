@@ -246,12 +246,12 @@ return (
     <ul className="lista-pokemon-base">
       {listaFiltrada.map((p) => {
         const nombreImagen = p.nombre.toLowerCase() + '.png';
-        const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
+        const urlImagen = `/Imagenes/Pokemons/${nombreImagen}`;
         const tipo1Img = p.tipoPrimario?.imagen
-          ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoPrimario.imagen}`
+          ? `/Imagenes/TipoElemento/${p.tipoPrimario.imagen}`
           : null;
         const tipo2Img = p.tipoSecundario?.imagen
-          ? `http://localhost:3000/Imagenes/TipoElemento/${p.tipoSecundario.imagen}`
+          ? `/Imagenes/TipoElemento/${p.tipoSecundario.imagen}`
           : null;
 
         return (
@@ -304,7 +304,7 @@ return (
   <div className="miniaturas-equipo">
     {pokemonsDelEquipo.map((p) => {
       const nombreImagen = p.imagen;
-      const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
+      const urlImagen = `/Imagenes/Pokemons/${nombreImagen}`;
 
       return (
         <div key={p.id} className="miniatura-card">
@@ -412,7 +412,7 @@ return (
 
                   {movSeleccionado.tipo?.imagen && (
                     <img
-                      src={`http://localhost:3000/Imagenes/TipoElemento/${movSeleccionado.tipo.imagen}`}
+                      src={`/Imagenes/TipoElemento/${movSeleccionado.tipo.imagen}`}
                       alt={movSeleccionado.tipo.nombre}
                       className="tipo-elemental-img"
                     />
@@ -420,7 +420,7 @@ return (
 
                   {movSeleccionado.categoriamovimiento?.imagen && (
                     <img
-                      src={`http://localhost:3000/Imagenes/TipoAtaque/${movSeleccionado.categoriamovimiento.imagen}`}
+                      src={`/Imagenes/TipoAtaque/${movSeleccionado.categoriamovimiento.imagen}`}
                       alt={movSeleccionado.categoriamovimiento.nombre}
                       className="categoria-movimiento-img"
                     />

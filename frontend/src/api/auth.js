@@ -1,19 +1,17 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3000/api';
+import client from './client';
 
 export const login = async (credentials) => {
     console.log("Las credeciales son ", credentials)
-  const response = await axios.post(`${API_URL}/auth/login`, credentials);
+  const response = await client.post('/auth/login', credentials);
   return response.data;
 };
 
 export const register = async (credentials) => {
-  return await axios.post('http://localhost:3000/api/auth/register', credentials);
+  return await client.post('/auth/register', credentials);
 };
 
 export const getProfile = async (token) => {
-  const response = await axios.get(`${API_URL}/entrenadores/me`, {
+  const response = await client.get('/entrenadores/me', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -21,7 +19,7 @@ export const getProfile = async (token) => {
   return response.data;
 };
 export const logout = async (token) => {
-  const response = await axios.post(`${API_URL}/auth/logout`, null, {
+  const response = await client.post('/auth/logout', null, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -30,7 +28,7 @@ export const logout = async (token) => {
 };
 
 export const logoutAll = async (token) => {
-  const response = await axios.post(`${API_URL}/auth/logout-all`, null, {
+  const response = await client.post('/auth/logout-all', null, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -38,7 +36,7 @@ export const logoutAll = async (token) => {
   return response.data;
 };
 export const getEquiposByEntrenadorId = async (id, token) => {
-  const response = await axios.get(`${API_URL}/equipos/${id}`, {
+  const response = await client.get('/equipos/${id}', {
     headers: {
       Authorization: `Bearer ${token}`,
     },

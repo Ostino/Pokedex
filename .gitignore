@@ -1,0 +1,25 @@
+# Dependencias y builds
+node_modules/
+dist/
+dist-ssr/
+
+# Variables de entorno
+.env
+.env.*
+
+# Base de trabajo (se crea al arrancar copiando backend/database/Pokebase.sqlite)
+backend/database/pokebase.runtime.sqlite
+backend/database/pokebase.runtime.sqlite-journal
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editores y sistema
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.sw?

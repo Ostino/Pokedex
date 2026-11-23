@@ -70,7 +70,7 @@ export default function ObjetosCrud() {
 
   const generarRutaImagen = (nombre) => {
     const nombreArchivo = nombre.toLowerCase().replace(/ /g, '_') + '.png';
-    return `http://localhost:3000/Imagenes/Objetos/${nombreArchivo}`;
+    return `/Imagenes/Objetos/${nombreArchivo}`;
   };
 
   return (

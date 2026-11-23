@@ -211,7 +211,7 @@ export default function PokemonBaseCrud() {
       <ul className="lista-pokemons">
         {pokemons.map((p) => {
           const nombreImagen = p.nombre.toLowerCase() + '.png';
-          const urlImagen = `http://localhost:3000/Imagenes/Pokemons/${nombreImagen}`;
+          const urlImagen = `/Imagenes/Pokemons/${nombreImagen}`;
 
           return (
             <li key={p.id} className="pokemon-item">

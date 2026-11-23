@@ -1,23 +1,22 @@
-import axios from 'axios';
+import client from './client';
 
-const BASE_URL = 'http://localhost:3000/api';
 
 export const getMovimientos = async (token) => {
-  const res = await axios.get(`${BASE_URL}/movimientos`, {
+  const res = await client.get(`/movimientos`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
 };
 
 export const getMovimientoPorId = async (id, token) => {
-  const res = await axios.get(`${BASE_URL}/movimientos/${id}`, {
+  const res = await client.get(`/movimientos/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
 };
 
 export async function crearMovimiento(datos, token) {
-  const res = await axios.post(`${BASE_URL}/movimientos`, datos, {
+  const res = await client.post(`/movimientos`, datos, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -27,7 +26,7 @@ export async function crearMovimiento(datos, token) {
 }
 
 export async function actualizarMovimiento(id, datos, token) {
-  const res = await axios.put(`${BASE_URL}/movimientos/${id}`, datos, {
+  const res = await client.put(`/movimientos/${id}`, datos, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -37,17 +36,17 @@ export async function actualizarMovimiento(id, datos, token) {
 }
 
 export const eliminarMovimiento = async (id, token) => {
-  await axios.delete(`${BASE_URL}/movimientos/${id}`, {
+  await client.delete(`/movimientos/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
 
 export const getTipos = async () => {
-  const res = await axios.get(`${BASE_URL}/tipos`);
+  const res = await client.get(`/tipos`);
   return res.data;
 };
 
 export const getCategoriasMovimiento = async () => {
-  const res = await axios.get(`${BASE_URL}/categoriamov`);
+  const res = await client.get(`/categoriamov`);
   return res.data;
 };

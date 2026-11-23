@@ -1,5 +1,6 @@
 const Entrenador = require('../models/Entrenador.model')
 const bcrypt = require('bcryptjs');
+const { puedeAcceder } = require('../utils/permisos');
 
 exports.obtenerEntrenadores = async (req, res) => {
   try {
@@ -12,6 +13,9 @@ exports.obtenerEntrenadores = async (req, res) => {
 
 exports.obtenerEntrenador = async (req, res) => {
   try {
+    if (!puedeAcceder(req.user, req.params.id)) {
+      return res.status(403).json({ error: 'No tienes permiso para ver este entrenador' });
+    }
     const entrenador = await Entrenador.findByPk(req.params.id);
     if (!entrenador) return res.status(404).json({ error: 'Entrenador no encontrado' });
     res.json(entrenador);
@@ -34,12 +38,15 @@ exports.obtenerPerfil = async (req, res) => {
 
 exports.actualizarEntrenador = async (req, res) => {
   try {
+    if (!puedeAcceder(req.user, req.params.id)) {
+      return res.status(403).json({ error: 'No tienes permiso para modificar este entrenador' });
+    }
     const entrenador = await Entrenador.findByPk(req.params.id);
     if (!entrenador) return res.status(404).json({ error: 'Entrenador no encontrado' });
 
     const { username, password } = req.body;
     if (username) entrenador.username = username;
-    if (password) entrenador.password = password;
+    if (password) entrenador.password = await bcrypt.hash(password, 10);
 
     await entrenador.save();
     res.json(entrenador);

@@ -1,6 +1,6 @@
-import axios from 'axios';
+import client from './client';
 
-const API_URL = 'http://localhost:3000/api/pokemonbase';
+const API_URL = '/pokemonbase';
 
 export const crearPokemonBase = async (datos, token) => {
   const formData = new FormData();
@@ -11,8 +11,8 @@ export const crearPokemonBase = async (datos, token) => {
     }
   }
 
-  const res = await axios.post(
-    'http://localhost:3000/api/pokemonbase',
+  const res = await client.post(
+    '/pokemonbase',
     formData,
     {
       headers: {
@@ -27,7 +27,7 @@ export const crearPokemonBase = async (datos, token) => {
 
 
 export const getAllPokemonBase = async (token) => {
-  const res = await axios.get(API_URL, {
+  const res = await client.get(API_URL, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -36,7 +36,7 @@ export const getAllPokemonBase = async (token) => {
 };
 
 export const getPokemonBasePorId = async (id, token) => {
-  const res = await axios.get(`${API_URL}/${id}`, {
+  const res = await client.get(`${API_URL}/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -45,7 +45,7 @@ export const getPokemonBasePorId = async (id, token) => {
 };
 
 export const actualizarPokemonBase = async (id, formData, token) => {
-  const res = await axios.put(`${API_URL}/${id}`, formData, {
+  const res = await client.put(`${API_URL}/${id}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
@@ -55,7 +55,7 @@ export const actualizarPokemonBase = async (id, formData, token) => {
 };
 
 export const eliminarPokemonBase = async (id, token) => {
-  const res = await axios.delete(`${API_URL}/${id}`, {
+  const res = await client.delete(`${API_URL}/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -64,7 +64,7 @@ export const eliminarPokemonBase = async (id, token) => {
 };
 
 export const verificarNumeroPokedex = async (numero, token) => {
-  const res = await axios.get(`${API_URL}/verificar-numero/${numero}`, {
+  const res = await client.get(`${API_URL}/verificar-numero/${numero}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -82,22 +82,22 @@ export const asignarStatsBase = async (pokemonBaseId, stats, token) => {
       'Content-Type': 'application/json',
     },
   };
-  const url = `http://localhost:3000/api/pokemonbase/${pokemonBaseId}/asignar-stats`;
+  const url = `/pokemonbase/${pokemonBaseId}/asignar-stats`;
 
-  const res = await axios.post(url, stats, config);
+  const res = await client.post(url, stats, config);
   return res.data;
 };
 export const getStats = async (pokemonBaseId, token) => {
-  const res = await axios.get(
-    `http://localhost:3000/api/pokemonbase/${pokemonBaseId}/get-stats`,
+  const res = await client.get(
+    `/pokemonbase/${pokemonBaseId}/get-stats`,
     headers(token)
   );
   return res.data;
 };
 
 export const reasignarStatsBase = async (id, stats, token) => {
-  const res = await axios.put(
-    `http://localhost:3000/api/pokemonbase/${id}/reasignar-stats`,
+  const res = await client.put(
+    `/pokemonbase/${id}/reasignar-stats`,
     stats,
     {
       headers: { Authorization: `Bearer ${token}` },

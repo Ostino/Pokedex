@@ -2,7 +2,9 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = 'Imagenes/Pokemons';
+const { LIMITE_IMAGEN } = require('./limitesSubida');
+
+const uploadDir = path.join(__dirname, '..', 'Imagenes', 'Pokemons');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -31,7 +33,8 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage,
-  fileFilter
+  fileFilter,
+  limits: { fileSize: LIMITE_IMAGEN }
 });
 
 module.exports = upload;

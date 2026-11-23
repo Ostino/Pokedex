@@ -2,14 +2,8 @@
 // y vacía la tabla Tokens para que ninguna sesión acabe en git.
 // Uso (con el servidor detenido): npm run semilla
 const fs = require('fs');
-const path = require('path');
 const { Sequelize } = require('sequelize');
-
-const BACKEND_DIR = path.join(__dirname, '..');
-const RUTA_SEMILLA = path.join(BACKEND_DIR, 'database', 'Pokebase.sqlite');
-const RUTA_BD = process.env.DB_PATH
-  ? path.resolve(BACKEND_DIR, process.env.DB_PATH)
-  : path.join(BACKEND_DIR, 'database', 'pokebase.runtime.sqlite');
+const { RUTA_SEMILLA, RUTA_BD } = require('../config/rutas');
 
 (async () => {
   if (!fs.existsSync(RUTA_BD)) {

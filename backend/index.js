@@ -11,10 +11,12 @@ if (process.env.NODE_ENV === 'production') {
 
 const app = require('./app');
 const inicializar = require('./inicializar');
+const { iniciarLimpiezaDemo } = require('./limpiezaDemo');
 
 async function iniciarServidor() {
   try {
     await inicializar();
+    iniciarLimpiezaDemo();
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {

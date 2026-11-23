@@ -137,7 +137,8 @@ Para probar el modo producción en local, compila el frontend y ejecuta `npm sta
 
 Un único servicio web:
 
-- **Build:** `npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend --omit=dev`
+- **Build:** `npm ci --prefix frontend --include=dev && npm run build --prefix frontend && npm ci --prefix backend --omit=dev`
+  (`--include=dev` hace falta porque, con `NODE_ENV=production`, npm omite las dependencias de desarrollo y Vite es una de ellas).
 - **Start:** `npm start --prefix backend`
 - **Health check:** `GET /api/health`
 - **Variables:** `NODE_ENV=production`, `NODE_VERSION=22`, `JWT_SECRET`, `ADMIN_PASSWORD`, `DEMO_PASSWORD=demo1234` (la misma contraseña que se publica arriba), `DEMO_LIMPIEZA_MINUTOS=10`

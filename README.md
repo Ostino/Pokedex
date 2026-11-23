@@ -3,9 +3,22 @@
 Aplicación web full-stack para crear y gestionar equipos Pokémon: cada entrenador arma sus equipos eligiendo Pokémon de la Pokédex y configurando su naturaleza, habilidad, objeto, movimientos, IVs y EVs, con el cálculo de sus estadísticas finales.
 
 **Demo:** TU-LINK
-**Cuenta demo:** usuario `demo` · contraseña `TU-CONTRASEÑA`
 
-> La demo está en el plan gratuito de Render, que duerme el servicio cuando no se usa: **la primera carga puede tardar alrededor de un minuto**. Los equipos y cuentas que crees en la demo se borran automáticamente a los 10 minutos, y cada reinicio devuelve los datos a su estado inicial.
+## Probar la demo
+
+Tienes dos opciones:
+
+1. **Entrar con la cuenta demo** (lo más rápido): pulsa **«Entrar con la cuenta demo»** en el inicio de sesión, o escribe sus datos:
+
+   | Usuario | Contraseña |
+   | --- | --- |
+   | `demo` | `demo1234` |
+
+   La cuenta siempre está disponible. Los equipos que crees con ella **se borran a los 10 minutos**, así cada visitante la encuentra limpia.
+
+2. **Crear tu propia cuenta** desde "Regístrate aquí". Es una cuenta de prueba: **se borra a los 10 minutos** de crearla, junto con sus equipos. La web te avisa del tiempo que le queda y, cuando se borra, te lleva al inicio de sesión. Después puedes crear otra o usar la cuenta demo.
+
+> La demo está en el plan gratuito de Render, que duerme el servicio cuando no se usa: **la primera carga puede tardar alrededor de un minuto**. Cada reinicio devuelve los datos a su estado inicial.
 
 <!-- Capturas de pantalla: agrégalas aquí, por ejemplo:
 ![Perfil del entrenador](docs/capturas/perfil.png)
@@ -50,10 +63,11 @@ backend/   Express 5
 - **Base de datos semilla.** `backend/database/Pokebase.sqlite` está versionada y es de **solo lectura**. Al arrancar, si no existe la base de trabajo (`DB_PATH`, por defecto `backend/database/pokebase.runtime.sqlite`, ignorada por git), se crea copiando la semilla. Por eso usar la app en local no deja cambios en git, y en Render cada reinicio parte de la semilla.
 - **Cuentas.** Al arrancar se crea o actualiza el usuario `admin` con `ADMIN_PASSWORD` y, si está definida, la cuenta `demo` (rol entrenador) con `DEMO_PASSWORD`.
 - **Limpieza de la demo.** Con `DEMO_LIMPIEZA_MINUTOS` definida, cada minuto se borra lo que crearon los visitantes hace más de ese tiempo: las cuentas registradas (con sus sesiones, equipos y Pokémon), los equipos y Pokémon creados con la cuenta `demo` y los EVs, IVs y stats sueltos. Nunca se tocan `admin`, `demo`, los datos de la semilla ni el catálogo (Pokémon base, objetos, movimientos, tipos, naturalezas y habilidades). Ver `backend/limpiezaDemo.js`.
+  El frontend lo avisa: `GET /api/demo` publica los minutos (el registro y el login lo muestran), `/api/entrenadores/me` dice cuándo se borrará la cuenta (cuenta atrás en el perfil y en la edición de equipos), y el 401 de una cuenta borrada lleva el código `CUENTA_ELIMINADA` para que el login explique qué pasó. Sin la variable no aparece ningún aviso.
 
 ## Ejecutar en local
 
-Requisitos: Node.js 20 o superior.
+Requisitos: Node.js 20.12 o superior.
 
 ```bash
 # Backend (http://localhost:3000)
@@ -67,16 +81,17 @@ npm install
 npm run dev
 ```
 
-Abre http://localhost:5173. Sin `ADMIN_PASSWORD`, el usuario `admin` conserva la contraseña de la semilla (`admin`) y el servidor lo avisa al arrancar. Para definir variables en la terminal:
-
-```bash
-ADMIN_PASSWORD=mi-clave DEMO_PASSWORD=demo123 npm run dev        # bash
-```
-```powershell
-$env:ADMIN_PASSWORD="mi-clave"; $env:DEMO_PASSWORD="demo123"; npm run dev   # PowerShell
-```
+Abre http://localhost:5173.
 
 ### Variables de entorno (backend)
+
+El backend lee `backend/.env` al arrancar, si existe (no se sube a git). Para crearlo, copia la plantilla y completa los valores:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Las variables definidas en la terminal o en el panel de Render tienen prioridad sobre el archivo. Sin `ADMIN_PASSWORD`, el usuario `admin` conserva la contraseña de la semilla (`admin`) y el servidor lo avisa al arrancar.
 
 | Variable | Obligatoria | Descripción |
 | --- | --- | --- |
@@ -84,7 +99,7 @@ $env:ADMIN_PASSWORD="mi-clave"; $env:DEMO_PASSWORD="demo123"; npm run dev   # Po
 | `PORT` | No | Puerto del servidor (por defecto `3000`; Render lo define solo). |
 | `JWT_SECRET` | En producción | Secreto para firmar los JWT. En desarrollo se usa uno de prueba y se muestra un aviso. |
 | `ADMIN_PASSWORD` | En producción | Contraseña del usuario `admin`; se aplica en cada arranque. |
-| `DEMO_PASSWORD` | No | Si está definida, crea o actualiza el usuario `demo`. |
+| `DEMO_PASSWORD` | No | Si está definida, crea o actualiza el usuario `demo` y activa el botón «Entrar con la cuenta demo» del login (`POST /api/auth/demo`). |
 | `DB_PATH` | No | Ruta de la base de trabajo (por defecto `backend/database/pokebase.runtime.sqlite`). |
 | `DEMO_LIMPIEZA_MINUTOS` | No | Si está definida, borra los datos de visitantes con más de esos minutos (en la demo, `10`). Sin ella no se borra nada. |
 
@@ -122,10 +137,11 @@ Para probar el modo producción en local, compila el frontend y ejecuta `npm sta
 
 Un único servicio web:
 
-- **Build:** `npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend --omit=dev`
+- **Build:** `npm ci --prefix frontend --include=dev && npm run build --prefix frontend && npm ci --prefix backend --omit=dev`
+  (`--include=dev` hace falta porque, con `NODE_ENV=production`, npm omite las dependencias de desarrollo y Vite es una de ellas).
 - **Start:** `npm start --prefix backend`
 - **Health check:** `GET /api/health`
-- **Variables:** `NODE_ENV=production`, `NODE_VERSION=22`, `JWT_SECRET`, `ADMIN_PASSWORD`, `DEMO_PASSWORD`, `DEMO_LIMPIEZA_MINUTOS=10`
+- **Variables:** `NODE_ENV=production`, `NODE_VERSION=22`, `JWT_SECRET`, `ADMIN_PASSWORD`, `DEMO_PASSWORD=demo1234` (la misma contraseña que se publica arriba), `DEMO_LIMPIEZA_MINUTOS=10`
 
 ---
 

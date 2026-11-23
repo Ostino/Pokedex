@@ -12,8 +12,9 @@ const requireUser = async (req, res, next) => {
     const tokenStr = authHeader.split(' ')[1];
 
     // Firma y caducidad: un token caducado o manipulado se rechaza y se borra.
+    let payload;
     try {
-      jwt.verify(tokenStr, JWT_SECRET);
+      payload = jwt.verify(tokenStr, JWT_SECRET);
     } catch {
       await Token.destroy({ where: { token: tokenStr } });
       return res.status(401).json({ error: 'Token inválido o expirado' });
@@ -25,11 +26,16 @@ const requireUser = async (req, res, next) => {
       include: {
         model: Entrenador,
         as: 'entrenador',
-        attributes: ['id', 'rol', 'username']
+        attributes: ['id', 'rol', 'username', 'createdAt']
       }
     });
 
     if (!token || !token.entrenador) {
+      // Token auténtico cuya cuenta ya no existe: la borró la limpieza de la demo (o un admin).
+      // Se indica con un código para que el frontend pueda explicarlo.
+      if (payload?.id && (await Entrenador.count({ where: { id: payload.id } })) === 0) {
+        return res.status(401).json({ error: 'Tu cuenta ya no existe', codigo: 'CUENTA_ELIMINADA' });
+      }
       return res.status(401).json({ error: 'Token inválido o expirado' });
     }
 

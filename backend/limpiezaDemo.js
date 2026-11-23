@@ -130,14 +130,38 @@ async function limpiarDatosDemo({ minutos, ahora = new Date() }) {
   });
 }
 
+// Minutos de DEMO_LIMPIEZA_MINUTOS, o null si no está definida o no es un número válido.
+function minutosLimpieza() {
+  const minutos = Number(process.env.DEMO_LIMPIEZA_MINUTOS);
+  return process.env.DEMO_LIMPIEZA_MINUTOS && Number.isFinite(minutos) && minutos > 0 ? minutos : null;
+}
+
+// Qué le pasará a esta cuenta con la limpieza, para avisar al usuario. null si la limpieza está apagada.
+//   cuentaExpiraEn: cuándo se borrará la cuenta (solo cuentas de visitantes); null si no se borra.
+//   equiposTemporales: si los equipos que cree se borrarán (visitantes y cuenta demo).
+async function infoLimpiezaParaCuenta(entrenador) {
+  const minutos = minutosLimpieza();
+  if (!minutos) return null;
+
+  const semilla = await cargarIdsSemilla();
+  const esVisitante = !USUARIOS_PROTEGIDOS.includes(entrenador.username) && !semilla.Entrenador.includes(entrenador.id);
+  const creada = entrenador.createdAt ? new Date(entrenador.createdAt) : null;
+
+  return {
+    minutos,
+    cuentaExpiraEn: esVisitante && creada ? new Date(creada.getTime() + minutos * 60 * 1000).toISOString() : null,
+    equiposTemporales: esVisitante || entrenador.username === 'demo',
+  };
+}
+
 // Programa la limpieza si DEMO_LIMPIEZA_MINUTOS está definida. Revisa cada minuto
 // (o antes si el plazo es menor), así cada dato vive como mucho N minutos más uno.
 function iniciarLimpiezaDemo() {
   const valor = process.env.DEMO_LIMPIEZA_MINUTOS;
   if (!valor) return null;
 
-  const minutos = Number(valor);
-  if (!Number.isFinite(minutos) || minutos <= 0) {
+  const minutos = minutosLimpieza();
+  if (!minutos) {
     console.warn(`⚠️  DEMO_LIMPIEZA_MINUTOS="${valor}" no es un número de minutos válido: limpieza desactivada.`);
     return null;
   }
@@ -164,4 +188,4 @@ function iniciarLimpiezaDemo() {
   return intervalo;
 }
 
-module.exports = { limpiarDatosDemo, iniciarLimpiezaDemo };
+module.exports = { limpiarDatosDemo, iniciarLimpiezaDemo, minutosLimpieza, infoLimpiezaParaCuenta };

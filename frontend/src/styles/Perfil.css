@@ -1,198 +1,472 @@
-.perfil-container {
-  max-width: 700px;
+/* Página de perfil. Todas las clases llevan el prefijo perfil- para no afectar a otras páginas
+   (Vite carga el CSS de forma global). Colores: solo las variables de index.css. */
+
+.perfil-pagina {
+  max-width: 860px;
   margin: 40px auto;
-  background-color: var(--color-gris-oscuro);
-  padding: 30px 40px;
-  border-radius: var(--radio-borde);
-  box-shadow: var(--sombra);
-  color: var(--color-blanco);
-}
-
-.perfil-title {
-  font-size: 2.2rem;
-  margin-bottom: 1.2rem;
-  border-bottom: 2px solid var(--color-rojo);
-  padding-bottom: 6px;
-}
-
-.subtitulos {
-  margin-top: 2rem;
-  color: var(--color-blanco);
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  border-bottom: 1px solid var(--color-rojo);
-  padding-bottom: 4px;
-}
-
-.perfil-buttons {
+  padding: 0 16px;
   display: flex;
-  gap: 15px;
-  margin: 15px 0 30px 0;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.btn {
-  padding: 10px 18px;
-  border-radius: var(--radio-borde);
-  border: none;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-  user-select: none;
-}
+/* ---------- Pokéball (CSS) ---------- */
 
-.btn-admin {
-  background-color: var(--color-rojo);
-  color: var(--color-blanco);
-  margin-bottom: 20px;
-  width: 100%;
-  font-size: 1.1rem;
-}
-
-.btn-admin:hover {
-  background-color: var(--color-rojo-oscuro);
-}
-
-.btn-logout {
-  background-color: var(--color-blanco);
-  color: var(--color-rojo);
-  border: 2px solid var(--color-rojo);
-  flex: 1;
-  font-size: 1rem;
-}
-
-.btn-logout:hover {
-  background-color: var(--color-rojo);
-  color: var(--color-blanco);
-  border-color: var(--color-rojo-oscuro);
-}
-
-.no-equipos-msg {
-  font-style: italic;
-  color: var(--color-gris);
-  margin-bottom: 20px;
-}
-
-.lista-equipos {
-  list-style: none;
-  margin-bottom: 30px;
-}
-
-.equipo-item {
-  background-color: var(--color-negro);
-  margin-bottom: 12px;
-  padding: 14px 20px;
-  border-radius: var(--radio-borde);
-  display: flex;
-  justify-content: space-between;
+.perfil-pokeball {
+  --tam: 48px;
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4);
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--tam);
+  height: var(--tam);
+  border-radius: 50%;
+  border: calc(var(--tam) * 0.06) solid var(--color-negro);
+  background: linear-gradient(
+    to bottom,
+    var(--color-rojo) 0 44%,
+    var(--color-negro) 44% 56%,
+    var(--color-blanco) 56% 100%
+  );
+  box-shadow: inset calc(var(--tam) * -0.08) calc(var(--tam) * -0.08) 0 rgba(18, 18, 18, 0.18);
 }
 
-.equipo-actions button {
-  margin-left: 10px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: var(--radio-borde);
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-editar {
-  background-color: var(--color-gris);
-  color: var(--color-negro);
-}
-
-.btn-editar:hover {
-  background-color: var(--color-rojo);
-  color: var(--color-blanco);
-}
-
-.btn-eliminar {
-  background-color: var(--color-rojo);
-  color: var(--color-blanco);
-}
-
-.btn-eliminar:hover {
-  background-color: var(--color-rojo-oscuro);
-}
-
-.btn-crear-equipo {
-  background-color: var(--color-rojo);
-  color: var(--color-blanco);
-  width: 100%;
-  font-size: 1.2rem;
-}
-
-.btn-crear-equipo:hover {
-  background-color: var(--color-rojo-oscuro);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(18, 18, 18, 0.85);
+.perfil-pokeball-boton {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  width: 38%;
+  height: 38%;
+  border-radius: 50%;
+  background-color: var(--color-blanco);
+  border: calc(var(--tam) * 0.06) solid var(--color-negro);
+  color: var(--color-negro);
+  font-weight: 800;
+  font-size: calc(var(--tam) * 0.2);
+  line-height: 1;
 }
 
-.modal-content {
-  background-color: var(--color-blanco);
-  color: var(--color-negro);
-  padding: 25px 30px;
-  border-radius: var(--radio-borde);
-  min-width: 320px;
+.perfil-pokeball--mini { --tam: 30px; }
+.perfil-pokeball--grande { --tam: 84px; }
+
+.perfil-pokeball--girando {
+  --tam: 56px;
+  animation: perfil-girar 1s ease-in-out infinite;
+}
+
+@keyframes perfil-girar {
+  0% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .perfil-pokeball--girando { animation: none; }
+}
+
+/* ---------- Tarjeta de entrenador ---------- */
+
+.perfil-tarjeta {
+  background-color: var(--color-gris-oscuro);
+  border-radius: calc(var(--radio-borde) * 2);
   box-shadow: var(--sombra);
+  overflow: hidden;
+  color: var(--color-blanco);
+}
+
+.perfil-tarjeta-banda {
+  height: 96px;
+  padding: 14px 24px;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0 12px, transparent 12px 24px),
+    linear-gradient(135deg, var(--color-rojo), var(--color-rojo-oscuro));
+  border-bottom: 6px solid var(--color-negro);
+}
+
+.perfil-tarjeta-etiqueta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.perfil-tarjeta-cuerpo {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  padding: 0 24px 20px;
+}
+
+.perfil-avatar {
+  --tam: 112px;
+  margin-top: -56px; /* mitad sobre la banda roja */
+  box-shadow:
+    0 0 0 6px var(--color-gris-oscuro),
+    inset calc(var(--tam) * -0.08) calc(var(--tam) * -0.08) 0 rgba(18, 18, 18, 0.18);
+}
+
+.perfil-identidad {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
-.modal-input {
-  padding: 10px;
-  border-radius: var(--radio-borde);
-  border: 1px solid var(--color-gris);
-  margin-top: 10px;
-  font-size: 1rem;
-  width: 100%;
+.perfil-nombre {
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
-.modal-buttons {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
+.perfil-rol {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-gris);
+  color: var(--color-gris);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.btn-guardar {
+.perfil-rol--admin {
+  border-color: var(--color-rojo);
   background-color: var(--color-rojo);
   color: var(--color-blanco);
 }
 
-.btn-guardar:hover {
+.perfil-datos {
+  display: flex;
+  gap: 12px;
+}
+
+.perfil-dato {
+  min-width: 96px;
+  padding: 10px 16px;
+  border-radius: var(--radio-borde);
+  background-color: var(--color-negro);
+  border-left: 4px solid var(--color-rojo);
+}
+
+.perfil-dato dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gris);
+}
+
+.perfil-dato dd {
+  margin-top: 2px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.perfil-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 24px 24px;
+  border-top: 1px solid rgba(211, 211, 211, 0.15);
+}
+
+.perfil-acciones .perfil-boton--contorno {
+  flex: 1 1 200px;
+}
+
+/* ---------- Botones ---------- */
+
+.perfil-boton {
+  padding: 10px 18px;
+  border-radius: var(--radio-borde);
+  border: 2px solid transparent;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.perfil-boton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.perfil-boton:focus-visible {
+  outline: 3px solid var(--color-blanco);
+  outline-offset: 2px;
+}
+
+.perfil-boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.perfil-boton--primario {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.perfil-boton--primario:hover:not(:disabled) {
   background-color: var(--color-rojo-oscuro);
 }
 
-.btn-cancelar {
-  background-color: var(--color-gris);
-  color: var(--color-negro);
-  margin-left: 15px;
+.perfil-boton--contorno {
+  background-color: transparent;
+  color: var(--color-blanco);
+  border-color: var(--color-gris);
 }
 
-.btn-cancelar:hover {
+.perfil-boton--contorno:hover {
+  border-color: var(--color-rojo);
+  background-color: var(--color-rojo);
+}
+
+.perfil-boton--peligro {
+  background-color: transparent;
+  color: var(--color-rojo);
+  border-color: var(--color-rojo);
+}
+
+.perfil-boton--peligro:hover {
+  background-color: var(--color-rojo);
+  color: var(--color-blanco);
+}
+
+.perfil-boton--secundario {
+  background-color: var(--color-gris);
+  color: var(--color-negro);
+}
+
+.perfil-boton--secundario:hover {
   background-color: var(--color-gris-oscuro);
   color: var(--color-blanco);
 }
 
-.error-message {
-  color: var(--color-rojo);
-  font-weight: 700;
-  margin: 20px;
+.perfil-boton--ancho {
+  flex-basis: 100%;
+  font-size: 1.1rem;
+}
+
+.perfil-boton--chico {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+/* ---------- Equipos ---------- */
+
+.perfil-equipos {
+  background-color: var(--color-gris-oscuro);
+  border-radius: calc(var(--radio-borde) * 2);
+  box-shadow: var(--sombra);
+  padding: 22px 24px 26px;
+  color: var(--color-blanco);
+}
+
+.perfil-equipos-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 2px solid var(--color-rojo);
+}
+
+.perfil-equipos-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.perfil-contador {
+  min-width: 28px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background-color: var(--color-rojo);
+  font-size: 0.9rem;
   text-align: center;
 }
 
-.loading-message {
+.perfil-lista-equipos {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.perfil-equipo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: calc(var(--radio-borde) * 1.5);
+  background-color: var(--color-negro);
+  border: 1px solid rgba(211, 211, 211, 0.12);
+  border-top: 4px solid var(--color-rojo);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.perfil-equipo:hover {
+  transform: translateY(-3px);
+  border-color: rgba(229, 57, 53, 0.6);
+  box-shadow: 0 8px 18px rgba(229, 57, 53, 0.25);
+}
+
+.perfil-equipo-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.perfil-equipo-nombre {
+  font-size: 1.15rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.perfil-equipo-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.perfil-equipo-acciones .perfil-boton {
+  flex: 1;
+}
+
+.perfil-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 16px;
+  border: 2px dashed rgba(211, 211, 211, 0.3);
+  border-radius: calc(var(--radio-borde) * 1.5);
   text-align: center;
+}
+
+.perfil-vacio .perfil-pokeball {
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.perfil-vacio-titulo {
   font-size: 1.2rem;
-  margin: 20px;
+  font-weight: 700;
+}
+
+.perfil-vacio-texto {
   color: var(--color-gris);
+}
+
+/* ---------- Modal de nuevo equipo ---------- */
+
+.perfil-modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgba(18, 18, 18, 0.85);
+}
+
+.perfil-modal {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 22px;
+  overflow: hidden;
+  border-radius: calc(var(--radio-borde) * 1.5);
+  background-color: var(--color-blanco);
+  color: var(--color-negro);
+  box-shadow: var(--sombra);
+}
+
+.perfil-modal-titulo {
+  padding: 16px 24px;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, var(--color-rojo), var(--color-rojo-oscuro));
+  border-bottom: 5px solid var(--color-negro);
+  color: var(--color-blanco);
+  font-size: 1.3rem;
+}
+
+.perfil-modal-etiqueta {
+  margin: 0 24px 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.perfil-modal-input {
+  margin: 0 24px;
+  padding: 10px 12px;
+  border-radius: var(--radio-borde);
+  border: 2px solid var(--color-gris);
+  font-size: 1rem;
+  color: var(--color-negro);
+  transition: border-color 0.2s ease;
+}
+
+.perfil-modal-input:focus {
+  outline: none;
+  border-color: var(--color-rojo);
+}
+
+.perfil-modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 22px 24px 0;
+}
+
+.perfil-modal .perfil-boton:focus-visible {
+  outline-color: var(--color-negro);
+}
+
+/* ---------- Mensajes de carga y error ---------- */
+
+.perfil-mensaje {
+  margin: 60px auto;
+  padding: 0 16px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--color-gris-oscuro);
+}
+
+.perfil-mensaje--error {
+  color: var(--color-rojo-oscuro);
+  font-weight: 700;
+}
+
+.perfil-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ---------- Móvil ---------- */
+
+@media (max-width: 560px) {
+  .perfil-pagina { margin: 20px auto; gap: 20px; }
+  .perfil-tarjeta-cuerpo { flex-direction: column; align-items: center; text-align: center; }
+  .perfil-identidad { align-items: center; }
+  .perfil-datos { width: 100%; justify-content: center; }
+  .perfil-dato { flex: 1; }
+  .perfil-nombre { font-size: 1.6rem; }
+  .perfil-equipos { padding: 18px 16px 20px; }
+  .perfil-equipos-cabecera .perfil-boton { width: 100%; }
 }

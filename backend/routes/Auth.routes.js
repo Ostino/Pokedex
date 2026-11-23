@@ -5,6 +5,7 @@ const requireUser = require('../middlewares/requiredUser');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/demo', authController.loginDemo);
 router.post('/logout', requireUser,authController.logout);
 router.post('/logout-all', requireUser, authController.logoutAll);
 module.exports = router;

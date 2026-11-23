@@ -6,6 +6,7 @@ dist-ssr/
 # Variables de entorno
 .env
 .env.*
+!.env.example
 
 # Base de trabajo (se crea al arrancar copiando backend/database/Pokebase.sqlite)
 backend/database/pokebase.runtime.sqlite

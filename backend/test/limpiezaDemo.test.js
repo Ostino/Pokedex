@@ -11,6 +11,7 @@ process.env.DB_PATH = path.join(DIR_TEMPORAL, 'test.sqlite');
 process.env.JWT_SECRET = 'secreto-de-test';
 process.env.ADMIN_PASSWORD = 'admin-de-test';
 process.env.DEMO_PASSWORD = 'demo-de-test';
+process.env.DEMO_LIMPIEZA_MINUTOS = '10'; // los tests no arrancan el temporizador; llaman a la limpieza a mano
 
 const request = require('supertest');
 const app = require('../app');
@@ -90,6 +91,37 @@ test('con menos de 10 minutos de antigüedad no se borra nada', async () => {
   assert.deepEqual(await contar([...DE_USUARIO, 'Token']), antes);
 });
 
+test('GET /api/demo informa de la limpieza y de la cuenta demo', async () => {
+  const res = await request(app).get('/api/demo');
+  assert.equal(res.status, 200);
+  assert.deepEqual(res.body, { limpiezaMinutos: 10, usuarioDemo: 'demo' });
+});
+
+test('POST /api/auth/demo entra con la cuenta demo (rol entrenador) sin contraseña', async () => {
+  const res = await request(app).post('/api/auth/demo');
+  assert.equal(res.status, 200);
+  const me = await request(app).get('/api/entrenadores/me').set(conToken(res.body.token));
+  assert.equal(me.body.username, 'demo');
+  assert.equal(me.body.rol, 1);
+});
+
+test('/api/entrenadores/me dice a cada cuenta qué le pasará con la limpieza', async () => {
+  const perfil = async (token) =>
+    (await request(app).get('/api/entrenadores/me').set(conToken(token))).body.limpiezaDemo;
+
+  // Visitante: su cuenta caduca 10 minutos después de crearse.
+  const deVisitante = await perfil(tokenVisitante);
+  const creada = (await m.Entrenador.findOne({ where: { username: 'visitante' } })).createdAt;
+  assert.equal(deVisitante.minutos, 10);
+  assert.equal(deVisitante.equiposTemporales, true);
+  assert.equal(new Date(deVisitante.cuentaExpiraEn).getTime(), new Date(creada).getTime() + 10 * MINUTO);
+
+  // demo: la cuenta se queda, sus equipos no.
+  assert.deepEqual(await perfil(await sesion('demo', 'demo-de-test')), { minutos: 10, cuentaExpiraEn: null, equiposTemporales: true });
+  // admin: no se toca nada.
+  assert.deepEqual(await perfil(await sesion('admin', 'admin-de-test')), { minutos: 10, cuentaExpiraEn: null, equiposTemporales: false });
+});
+
 test('pasados 10 minutos se borran los datos de visitantes y de la cuenta demo', async () => {
   const resumen = await limpiarDatosDemo({ minutos: 10, ahora: new Date(Date.now() + 11 * MINUTO) });
   assert.deepEqual(resumen, { cuentas: 1, equipos: 2, pokemon: 2, sueltos: 1 });
@@ -107,6 +139,7 @@ test('pasados 10 minutos se borran los datos de visitantes y de la cuenta demo',
 
   const res = await request(app).get('/api/entrenadores/me').set(conToken(tokenVisitante));
   assert.equal(res.status, 401, 'la sesión del visitante borrado ya no sirve');
+  assert.equal(res.body.codigo, 'CUENTA_ELIMINADA', 'el 401 explica que la cuenta ya no existe');
 });
 
 test('admin, demo, los datos de la semilla y el catálogo se conservan', async () => {

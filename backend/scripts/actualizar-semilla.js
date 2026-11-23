@@ -1,6 +1,7 @@
 // Copia la base de trabajo sobre la semilla versionada (database/Pokebase.sqlite)
 // y vacía la tabla Tokens para que ninguna sesión acabe en git.
 // Uso (con el servidor detenido): npm run semilla
+require('../config/cargarEnv');
 const fs = require('fs');
 const { Sequelize } = require('sequelize');
 const { RUTA_SEMILLA, RUTA_BD } = require('../config/rutas');

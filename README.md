@@ -2,7 +2,7 @@
 
 Aplicación web full-stack para crear y gestionar equipos Pokémon: cada entrenador arma sus equipos eligiendo Pokémon de la Pokédex y configurando su naturaleza, habilidad, objeto, movimientos, IVs y EVs, con el cálculo de sus estadísticas finales.
 
-**Demo:** [TU-LINK](https://demodexoscar.onrender.com)
+**Demo:** [Pokedex](https://demodexoscar.onrender.com)
 
 Puede tardar un minuto en levantar la pagina y ser algo lenta por el servicio de demo gratuito
 

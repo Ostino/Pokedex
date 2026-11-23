@@ -1,4 +1,4 @@
-# Pokedex
+# DemoDex
 
 Aplicación web full-stack para crear y gestionar equipos Pokémon: cada entrenador arma sus equipos eligiendo Pokémon de la Pokédex y configurando su naturaleza, habilidad, objeto, movimientos, IVs y EVs, con el cálculo de sus estadísticas finales.
 

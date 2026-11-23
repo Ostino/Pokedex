@@ -17,7 +17,7 @@ export default function AdminEntrenadores() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEntrenadores(response.data);
-      } catch (err) {
+      } catch {
         setError('Error al cargar entrenadores');
       }
     };
@@ -59,12 +59,12 @@ export default function AdminEntrenadores() {
     try {
       await client.patch(
         `/entrenadores/${id}/cambiar-password`,
-        { password: nuevaPassword },
+        { nuevaPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Contraseña actualizada');
-    } catch {
-      alert('Error al cambiar la contraseña');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Error al cambiar la contraseña');
     }
   };
 

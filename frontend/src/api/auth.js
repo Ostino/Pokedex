@@ -43,3 +43,9 @@ export const getEquiposByEntrenadorId = async (id, token) => {
   });
   return response.data;
 };
+
+// Entra con la cuenta demo sin contraseña (solo si el backend la tiene habilitada).
+export const loginDemo = async () => {
+  const response = await client.post('/auth/demo');
+  return response.data;
+};

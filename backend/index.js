@@ -1,5 +1,7 @@
 // Arranque del servidor. La aplicación Express está en app.js (así los tests pueden usarla sin levantar el servidor).
 
+require('./config/cargarEnv');
+
 // En producción, sin secretos no se arranca. Se comprueba antes de cargar nada más.
 if (process.env.NODE_ENV === 'production') {
   const faltan = ['JWT_SECRET', 'ADMIN_PASSWORD'].filter((nombre) => !process.env[nombre]);

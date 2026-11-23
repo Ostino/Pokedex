@@ -1,6 +1,11 @@
 const Entrenador = require('../models/Entrenador.model')
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 const { puedeAcceder } = require('../utils/permisos');
+const {
+  validarUsername, validarPassword, igualSinMayusculas, mensajeDuplicado,
+} = require('../utils/validacionEntrenador');
+const { infoLimpiezaParaCuenta } = require('../limpiezaDemo');
 
 exports.obtenerEntrenadores = async (req, res) => {
   try {
@@ -29,7 +34,10 @@ exports.obtenerPerfil = async (req, res) => {
     res.json({
       id: req.user.id,
       username: req.user.username,
-      rol: req.user.rol
+      rol: req.user.rol,
+      // Si la limpieza de la demo está activa: cuándo se borrará esta cuenta y si sus equipos son temporales.
+      // Si algo fallara al calcularlo, el perfil se sirve igual (sin aviso) en vez de dar error.
+      limpiezaDemo: await infoLimpiezaParaCuenta(req.user).catch(() => null),
     });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener perfil', details: error.message });
@@ -44,14 +52,30 @@ exports.actualizarEntrenador = async (req, res) => {
     const entrenador = await Entrenador.findByPk(req.params.id);
     if (!entrenador) return res.status(404).json({ error: 'Entrenador no encontrado' });
 
-    const { username, password } = req.body;
-    if (username) entrenador.username = username;
-    if (password) entrenador.password = await bcrypt.hash(password, 10);
+    const { username, password } = req.body || {};
+
+    if (username !== undefined) {
+      const nuevo = validarUsername(username);
+      if (nuevo.error) return res.status(400).json({ error: nuevo.error });
+      const ocupado = await Entrenador.findOne({
+        where: { [Op.and]: [igualSinMayusculas('username', nuevo.valor), { id: { [Op.ne]: entrenador.id } }] },
+      });
+      if (ocupado) return res.status(400).json({ error: 'Ese nombre de usuario ya está en uso' });
+      entrenador.username = nuevo.valor;
+    }
+
+    if (password !== undefined) {
+      const nueva = validarPassword(password);
+      if (nueva.error) return res.status(400).json({ error: nueva.error });
+      entrenador.password = await bcrypt.hash(nueva.valor, 10);
+    }
 
     await entrenador.save();
     res.json(entrenador);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    const duplicado = mensajeDuplicado(error);
+    if (duplicado) return res.status(400).json({ error: duplicado });
+    res.status(500).json({ error: 'Error al actualizar el entrenador' });
   }
 };
 
@@ -95,10 +119,11 @@ exports.quitarAdmin = async (req, res) => {
 
 exports.cambiarPassword = async (req, res) => {
   const { id } = req.params;
-  const { nuevaPassword } = req.body;
+  const { nuevaPassword } = req.body || {};
 
-  if (!nuevaPassword ) {
-    return res.status(400).json({ error: 'La contraseña debe tener un valor' });
+  const nueva = validarPassword(nuevaPassword);
+  if (nueva.error) {
+    return res.status(400).json({ error: nueva.error });
   }
 
   try {

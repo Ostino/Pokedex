@@ -1,0 +1,127 @@
+/* Ficha de un Pokémon del equipo (VerPokemonAlt). Prefijo ficha-; colores de index.css. */
+
+.ficha {
+  position: relative;
+  margin-top: 20px;
+  border-radius: calc(var(--radio-borde) * 1.5);
+  background-color: var(--color-negro);
+  border: 1px solid rgba(211, 211, 211, 0.15);
+  border-top: 4px solid var(--color-rojo);
+  color: var(--color-blanco);
+  overflow: hidden;
+}
+
+.ficha--mensaje { padding: 18px 56px 18px 18px; color: var(--color-gris); }
+
+.ficha-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 56px 16px 18px;
+  border-bottom: 1px solid rgba(211, 211, 211, 0.12);
+}
+
+.ficha-img {
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 50%;
+  background-color: var(--color-gris-oscuro);
+}
+
+.ficha-identidad { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ficha-numero { font-size: 0.85rem; font-weight: 700; color: var(--color-gris); }
+.ficha-nombre { font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
+.ficha-tipos { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.ficha-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px 2px 3px;
+  border-radius: 999px;
+  background-color: var(--color-gris-oscuro);
+  border: 1px solid rgba(211, 211, 211, 0.2);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ficha-tipo img { width: 18px; height: 18px; object-fit: contain; }
+
+.ficha-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--color-gris);
+  background-color: transparent;
+  color: var(--color-blanco);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ficha-cerrar:hover { background-color: var(--color-rojo); border-color: var(--color-rojo); }
+.ficha-cerrar:focus-visible { outline: 3px solid var(--color-blanco); outline-offset: 2px; }
+
+.ficha-cuerpo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px 24px;
+  padding: 16px 18px 20px;
+}
+
+.ficha-datos { display: flex; flex-direction: column; gap: 10px; }
+
+.ficha-datos dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gris);
+}
+
+.ficha-datos dd { font-weight: 700; }
+.ficha-objeto { display: flex; align-items: center; gap: 6px; }
+.ficha-objeto img { width: 24px; height: 24px; object-fit: contain; }
+
+.ficha-subtitulo {
+  margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 3px solid var(--color-rojo);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.ficha-movimientos { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+.ficha-movimientos li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radio-borde);
+  background-color: var(--color-gris-oscuro);
+  font-weight: 600;
+}
+
+.ficha-potencia { color: var(--color-gris); font-weight: 700; }
+
+.ficha-tabla-contenedor { grid-column: 1 / -1; }
+
+.ficha-tabla { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+.ficha-tabla th,
+.ficha-tabla td {
+  padding: 5px 8px;
+  text-align: right;
+  border-bottom: 1px solid rgba(211, 211, 211, 0.1);
+}
+
+.ficha-tabla th:first-child { text-align: left; }
+.ficha-tabla thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-gris); }
+.ficha-final { font-weight: 800; }

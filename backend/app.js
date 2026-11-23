@@ -18,6 +18,7 @@ const ivsRoutes = require('./routes/IVs.routes');
 const evsRoutes = require('./routes/EVs.routes');
 const statsRoutes = require('./routes/Stats.routes');
 const { manejarErrorSubida } = require('./middlewares/limitesSubida');
+const { minutosLimpieza } = require('./limpiezaDemo');
 
 const app = express();
 
@@ -30,6 +31,14 @@ app.use(cors());
 // Health check para Render: no toca la base de datos.
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Configuración pública de la demo, para que el frontend pueda avisar (no toca la base de datos).
+app.get('/api/demo', (req, res) => {
+  res.json({
+    limpiezaMinutos: minutosLimpieza(),
+    usuarioDemo: process.env.DEMO_PASSWORD ? 'demo' : null,
+  });
 });
 
 app.use('/api/auth', authRoutes);

@@ -1,4 +1,5 @@
 const { Entrenador, Equipo } = require('../models');
+const { puedeAcceder } = require('../utils/permisos');
 
 exports.obtenerTodos = async (req, res) => {
   try {
@@ -52,15 +53,17 @@ exports.createEquipo = async (req, res) => {
 
 exports.updateEquipo = async (req, res) => {
   try {
-        const entrenadorId = req.user.id;
     const { id } = req.params;
     const { nombre } = req.body;
     const equipo = await Equipo.findByPk(id);
     if (!equipo) {
       return res.status(404).json({ message: 'Equipo no encontrado' });
     }
+    if (!puedeAcceder(req.user, equipo.entrenadorId)) {
+      return res.status(403).json({ message: 'No tienes permiso para modificar este equipo' });
+    }
+    // El dueño del equipo no cambia al editarlo.
     equipo.nombre = nombre || equipo.nombre;
-    equipo.entrenadorId = entrenadorId || equipo.entrenadorId;
     await equipo.save();
     res.json(equipo);
   } catch (error) {
@@ -74,6 +77,9 @@ exports.deleteEquipo = async (req, res) => {
     const equipo = await Equipo.findByPk(id);
     if (!equipo) {
       return res.status(404).json({ message: 'Equipo no encontrado' });
+    }
+    if (!puedeAcceder(req.user, equipo.entrenadorId)) {
+      return res.status(403).json({ message: 'No tienes permiso para eliminar este equipo' });
     }
     await equipo.destroy();
     res.json({ message: 'Equipo eliminado correctamente' });

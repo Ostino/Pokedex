@@ -91,9 +91,9 @@ export default function MovimientosCrud() {
   };
 
   const getTipoImagen = (imagen) =>
-    `http://localhost:3000/Imagenes/Tipos/${imagen}`;
+    `/Imagenes/Tipos/${imagen}`;
   const getCategoriaImagen = (imagen) =>
-    `http://localhost:3000/Imagenes/Categorias/${imagen}`;
+    `/Imagenes/Categorias/${imagen}`;
 
   return (
     <div className="movimientos-container">

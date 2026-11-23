@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
+import client from '../api/client';
 
 export default function AdminGuard({ children }) {
   const { token, logout } = useContext(AuthContext);
@@ -11,7 +11,7 @@ export default function AdminGuard({ children }) {
   useEffect(() => {
     const verifyAdmin = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/entrenadores/admin', {
+        const response = await client.get('/entrenadores/admin', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

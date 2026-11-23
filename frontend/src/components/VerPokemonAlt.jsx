@@ -1,5 +1,5 @@
 import { useEffect, useState,useContext  } from 'react';
-import axios from 'axios';
+import client from '../api/client';
 import { AuthContext } from '../context/AuthContext';
 
 export default function VerPokemon({ id }) {
@@ -10,7 +10,7 @@ export default function VerPokemon({ id }) {
   useEffect(() => {
     const fetchPokemon = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/pokemonalt/${id}`, {
+        const response = await client.get(`/pokemonalt/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -28,9 +28,9 @@ export default function VerPokemon({ id }) {
   if (error) return <p>{error}</p>;
   if (!pokemon) return <p>Cargando...</p>;
 
-  const tipoImg = (tipo) => tipo ? `http://localhost:3000/Imagenes/TipoElemento/${tipo.imagen}` : null;
-  const objetoImg = pokemon.objeto?.imagen ? `http://localhost:3000/Imagenes/Objetos/${pokemon.objeto.imagen}` : null;
-  const pokeImg = pokemon.imagen ? `http://localhost:3000/Imagenes/Pokemons/${pokemon.imagen}` : null;
+  const tipoImg = (tipo) => tipo ? `/Imagenes/TipoElemento/${tipo.imagen}` : null;
+  const objetoImg = pokemon.objeto?.imagen ? `/Imagenes/Objetos/${pokemon.objeto.imagen}` : null;
+  const pokeImg = pokemon.imagen ? `/Imagenes/Pokemons/${pokemon.imagen}` : null;
 
   return (
     <div style={{ border: '1px solid #1976d2', borderRadius: '10px', padding: '20px', marginTop: '20px', backgroundColor: '#f8f9fa' }}>

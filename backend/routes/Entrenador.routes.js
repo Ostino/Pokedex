@@ -8,7 +8,7 @@ router.get('/me', requireUser, EntrenadorController.obtenerPerfil);
 router.get('/admin', requireUser,requireAdmin, EntrenadorController.obtenerPerfil);
 
 router.get('/obtener/:id', requireUser, EntrenadorController.obtenerEntrenador);
-router.get('/allEntrenadores', requireUser, EntrenadorController.obtenerEntrenadores);
+router.get('/allEntrenadores', requireUser, requireAdmin, EntrenadorController.obtenerEntrenadores);
 
 router.put('/actualizar/:id', requireUser, EntrenadorController.actualizarEntrenador);
 router.delete('/eliminar/:id', requireUser, requireAdmin, EntrenadorController.eliminarEntrenador);

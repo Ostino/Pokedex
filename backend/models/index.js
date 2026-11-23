@@ -15,8 +15,8 @@ const Habilidades = require('./Habilidades.model');
 const Objeto = require('./Objeto.model');
 const Movimiento = require('./Movimiento.model');
 const CategoriaMov = require('./CategoriaMov.model');
-const Evs = require('./Evs.model');
-const Ivs = require('./Ivs.model');
+const Evs = require('./EVs.model');
+const Ivs = require('./IVs.model');
 
 const models = {
   sequelize,

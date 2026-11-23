@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import client from '../api/client';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/gestionEntrenadores.css';
 export default function AdminEntrenadores() {
@@ -13,7 +13,7 @@ export default function AdminEntrenadores() {
 
     const fetchEntrenadores = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/entrenadores/allEntrenadores', {
+        const response = await client.get('/entrenadores/allEntrenadores', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEntrenadores(response.data);
@@ -27,7 +27,7 @@ export default function AdminEntrenadores() {
 
   const hacerAdmin = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/api/entrenadores/${id}/hacer-admin`, {}, {
+      await client.patch(`/entrenadores/${id}/hacer-admin`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       actualizarRolLocal(id, 2);
@@ -38,7 +38,7 @@ export default function AdminEntrenadores() {
 
   const quitarAdmin = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/api/entrenadores/${id}/quitar-admin`, {}, {
+      await client.patch(`/entrenadores/${id}/quitar-admin`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       actualizarRolLocal(id, 1);
@@ -57,8 +57,8 @@ export default function AdminEntrenadores() {
     const nuevaPassword = prompt('Nueva contraseña:');
     if (!nuevaPassword) return;
     try {
-      await axios.patch(
-        `http://localhost:3000/api/entrenadores/${id}/cambiar-password`,
+      await client.patch(
+        `/entrenadores/${id}/cambiar-password`,
         { password: nuevaPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

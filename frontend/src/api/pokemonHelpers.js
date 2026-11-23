@@ -1,4 +1,4 @@
-import axios from 'axios';
+import client from './client';
 
 const headers = (token) => ({
   headers: {
@@ -7,35 +7,35 @@ const headers = (token) => ({
 });
 
 export const getTipos = async (token) => {
-  const res = await axios.get('http://localhost:3000/api/tipos', headers(token));
+  const res = await client.get('/tipos', headers(token));
   return res.data;
 };
 
 export const getNaturalezas = async (token) => {
-  const res = await axios.get('http://localhost:3000/api/naturalezas', headers(token));
+  const res = await client.get('/naturalezas', headers(token));
   return res.data;
 };
 
 export const getHabilidades = async (token) => {
-  const res = await axios.get('http://localhost:3000/api/habilidades', headers(token));
+  const res = await client.get('/habilidades', headers(token));
   return res.data;
 };
 
 export const getObjetos = async (token) => {
-  const res = await axios.get('http://localhost:3000/api/objetos', headers(token));
+  const res = await client.get('/objetos', headers(token));
   return res.data;
 };
 
 export const getMovimientos = async (token) => {
-  const res = await axios.get('http://localhost:3000/api/movimientos', headers(token));
+  const res = await client.get('/movimientos', headers(token));
   return res.data;
 };
 
 export const verificarNumeroPokedex = async (numero, token) => {
-  const res = await axios.get(`http://localhost:3000/api/pokemonbase/verificar-numero/${numero}`, headers(token));
+  const res = await client.get(`/pokemonbase/verificar-numero/${numero}`, headers(token));
   return res.data;
 };
 export const getAllPokemonBase = async (token) => {
-  const res = await axios.get(`http://localhost:3000/api/pokemonbase`, headers(token));
+  const res = await client.get(`/pokemonbase`, headers(token));
   return res.data;
 };

@@ -26,10 +26,24 @@ const Entrenador = sequelize.define('Entrenador', {
     type: DataTypes.STRING,
     allowNull: false
   }
+}, {
+  // La contraseña nunca se carga salvo que se pida explícitamente con scope('conPassword').
+  defaultScope: {
+    attributes: { exclude: ['password'] }
+  },
+  scopes: {
+    conPassword: { attributes: { include: ['password'] } }
+  }
 });
 
+// Red de seguridad: aunque la instancia tenga la contraseña cargada, nunca se serializa.
+Entrenador.prototype.toJSON = function () {
+  const valores = { ...this.get({ plain: true }) };
+  delete valores.password;
+  return valores;
+};
+
 Entrenador.associate = (models) => {
-  console.log('Ejecutando Entrenador.associate');
 
   Entrenador.hasMany(models.Equipo, {
     foreignKey: 'entrenadorId',
